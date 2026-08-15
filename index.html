@@ -1,0 +1,1280 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MBPU-01 · Mobile Biomass Processing Unit — 3D General Arrangement</title>
+<style>
+  :root{
+    --bg0:#0A1017; --bg1:#101B24; --panel:rgba(13,22,30,.86); --panel2:rgba(9,16,22,.92);
+    --line:#1F303C; --line2:#2C4150;
+    --ink:#DDE8F0; --ink2:#8EA3B4; --ink3:#5C6F7E;
+    --amber:#E9A13B; --cyan:#54BFE0; --rust:#D8593C; --moss:#93A544; --char:#79838E; --oil:#B4712F;
+    --mono: ui-monospace, "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg0);color:var(--ink);font-family:var(--sans);overflow:hidden;-webkit-font-smoothing:antialiased}
+  #app{position:fixed;inset:0}
+  canvas{display:block;touch-action:none}
+  #svgo{position:absolute;inset:0;pointer-events:none;z-index:4}
+  #labels{position:absolute;inset:0;pointer-events:none;z-index:5}
+
+  .lab{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer;
+       font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:#0A1017;
+       background:var(--amber);border-radius:100px;padding:3px 8px 2.5px;white-space:nowrap;
+       box-shadow:0 2px 10px rgba(0,0,0,.55);border:1px solid #F6C97E;transition:background .15s,color .15s}
+  .lab:hover,.lab.on{background:#F6E3C2}
+  .lab.dim{background:rgba(233,161,59,.28);color:#0A1017;border-color:rgba(246,201,126,.3)}
+  .dim-lab{position:absolute;transform:translate(-50%,-50%);font-family:var(--mono);font-size:10px;
+       color:var(--cyan);background:rgba(10,16,23,.82);padding:1px 5px;border:1px solid rgba(84,191,224,.35);letter-spacing:.05em}
+
+  /* ---------- chrome ---------- */
+  .bar{position:absolute;z-index:8;background:var(--panel);border:1px solid var(--line);
+       backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  #top{top:0;left:0;right:0;border-width:0 0 1px;display:flex;align-items:stretch;gap:0;height:52px}
+  .brand{display:flex;flex-direction:column;justify-content:center;padding:0 16px;border-right:1px solid var(--line);min-width:0}
+  .brand b{font-family:var(--mono);font-size:12px;letter-spacing:.16em;font-weight:600;color:var(--ink)}
+  .brand span{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink3);margin-top:2px;
+       white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tools{display:flex;align-items:center;gap:4px;padding:0 10px;overflow-x:auto;scrollbar-width:none;flex:1}
+  .tools::-webkit-scrollbar{display:none}
+  .grp{display:flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:2px;background:rgba(0,0,0,.25)}
+  .grp+.grp{margin-left:8px}
+  button{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);
+       background:transparent;border:0;padding:6px 9px;cursor:pointer;border-radius:1px;white-space:nowrap;transition:.14s}
+  button:hover{color:var(--ink);background:rgba(233,161,59,.1)}
+  button.on{color:#0A1017;background:var(--amber);font-weight:600}
+  button:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}
+  .lbl{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;
+       padding:0 6px 0 2px;align-self:center}
+
+  /* ---------- side panels ---------- */
+  #left{top:52px;left:0;bottom:0;width:246px;border-width:0 1px 0 0;display:flex;flex-direction:column}
+  #right{top:52px;right:0;bottom:0;width:290px;border-width:0 0 0 1px;display:flex;flex-direction:column}
+  .ph{padding:10px 14px 8px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline}
+  .ph h2{margin:0;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--ink2);font-weight:600;text-transform:uppercase}
+  .ph em{font-family:var(--mono);font-size:9px;color:var(--ink3);font-style:normal}
+  .scroll{overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+  .scroll::-webkit-scrollbar{width:7px}
+  .scroll::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+
+  .mod{border-bottom:1px solid var(--line)}
+  .mod>h3{margin:0;padding:9px 14px;font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;color:var(--ink2);
+        display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;text-transform:uppercase}
+  .mod>h3 i{width:7px;height:7px;border-radius:1px;flex:none;font-style:normal}
+  .mod>h3 u{margin-left:auto;text-decoration:none;color:var(--ink3);font-size:9px}
+  .row{display:flex;gap:9px;padding:6px 14px 6px 22px;cursor:pointer;align-items:baseline;border-left:2px solid transparent}
+  .row:hover{background:rgba(233,161,59,.07)}
+  .row.on{background:rgba(233,161,59,.14);border-left-color:var(--amber)}
+  .row code{font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:.03em;flex:none;width:52px}
+  .row span{font-size:11.5px;color:var(--ink2);line-height:1.35}
+  .row.on span{color:var(--ink)}
+
+  #spec{padding:14px}
+  #spec .tag{font-family:var(--mono);font-size:11px;color:var(--amber);letter-spacing:.1em}
+  #spec h4{margin:5px 0 3px;font-size:16px;line-height:1.22;font-weight:600;letter-spacing:-.01em}
+  #spec .duty{font-size:11.5px;color:var(--ink2);line-height:1.5;margin:8px 0 14px}
+  table{width:100%;border-collapse:collapse}
+  td{font-family:var(--mono);font-size:10.5px;padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45}
+  td:first-child{color:var(--ink3);width:44%;padding-right:10px;letter-spacing:.02em}
+  td:last-child{color:var(--ink);text-align:right}
+  .empty{padding:30px 16px;font-size:12px;color:var(--ink3);line-height:1.65}
+  .empty b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.15em;color:var(--ink2);margin-bottom:8px}
+
+  .kpis{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+  .kpi{padding:9px 14px;border-bottom:1px solid var(--line)}
+  .kpi:nth-child(odd){border-right:1px solid var(--line)}
+  .kpi b{display:block;font-family:var(--mono);font-size:14px;color:var(--ink);letter-spacing:-.02em}
+  .kpi b sub{font-size:9px;color:var(--ink3);letter-spacing:.08em;vertical-align:baseline}
+  .kpi span{font-family:var(--mono);font-size:8.5px;letter-spacing:.11em;color:var(--ink3);text-transform:uppercase}
+
+  /* ---------- legend / streams ---------- */
+  #legend{border-top:1px solid var(--line);padding:10px 14px 12px}
+  #legend h2{margin:0 0 8px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--ink3);text-transform:uppercase}
+  .st{display:flex;align-items:center;gap:8px;padding:2.5px 0;font-family:var(--mono);font-size:9.5px;color:var(--ink2)}
+  .st i{width:14px;height:2px;flex:none;border-radius:2px}
+  .st u{margin-left:auto;text-decoration:none;color:var(--ink3);font-size:9px}
+
+  /* ---------- title block ---------- */
+  #tb{left:246px;bottom:0;border-width:1px 1px 0 0;display:flex;font-family:var(--mono);background:var(--panel2)}
+  #tb div{padding:6px 12px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:3px;justify-content:center}
+  #tb div:last-child{border-right:0}
+  #tb s{text-decoration:none;font-size:8px;letter-spacing:.14em;color:var(--ink3)}
+  #tb b{font-size:10.5px;font-weight:500;color:var(--ink);letter-spacing:.04em}
+
+  #ex{right:290px;bottom:0;border-width:1px 0 0 1px;padding:8px 14px;display:flex;align-items:center;gap:12px}
+  #ex label{font-family:var(--mono);font-size:9px;letter-spacing:.13em;color:var(--ink3);text-transform:uppercase}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:130px;height:2px;background:var(--line2);outline:0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--amber);cursor:grab;border:2px solid var(--bg0)}
+  input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--amber);cursor:grab;border:2px solid var(--bg0)}
+  #exv{font-family:var(--mono);font-size:10px;color:var(--amber);width:30px;text-align:right}
+
+  #hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;font-family:var(--mono);
+        font-size:9.5px;letter-spacing:.1em;color:var(--ink3);background:rgba(10,16,23,.7);padding:5px 12px;
+        border:1px solid var(--line);pointer-events:none;transition:opacity .5s}
+
+  #boot{position:fixed;inset:0;z-index:20;background:var(--bg0);display:flex;flex-direction:column;
+        align-items:center;justify-content:center;gap:14px;transition:opacity .5s}
+  #boot p{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--ink3);margin:0;text-transform:uppercase}
+  #boot .b{width:180px;height:2px;background:var(--line);overflow:hidden}
+  #boot .b i{display:block;height:100%;width:35%;background:var(--amber);animation:sl 1.1s ease-in-out infinite}
+  @keyframes sl{0%{transform:translateX(-100%)}100%{transform:translateX(330%)}}
+
+  .mobtabs{display:none}
+  @media (max-width:940px){
+    #left,#right{position:absolute;top:auto;bottom:0;left:0;right:0;width:auto;height:46vh;border-width:1px 0 0}
+    #left{display:none} #right{display:none}
+    body.t-sched #left{display:flex} body.t-spec #right{display:flex}
+    #tb{left:0;right:0;bottom:auto;top:52px;border-width:0 0 1px;overflow-x:auto}
+    #tb div:nth-child(n+5){display:none}
+    #ex{right:0;left:0;bottom:0;border-width:1px 0 0;justify-content:center;background:var(--panel2)}
+    body.t-sched #ex,body.t-spec #ex{bottom:46vh}
+    .mobtabs{display:flex;position:absolute;bottom:0;right:0;z-index:9}
+    body.t-sched .mobtabs,body.t-spec .mobtabs{bottom:46vh}
+    .mobtabs button{background:var(--panel2);border:1px solid var(--line);border-width:1px 0 0 1px;padding:9px 12px}
+    #hint{display:none}
+    .brand span{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+
+<div id="app">
+  <div id="labels"></div>
+  <svg id="svgo"></svg>
+
+  <div class="bar" id="top">
+    <div class="brand"><b>MBPU-01</b><span>MOBILE BIOMASS PROCESSING UNIT · AUGER FAST PYROLYSIS</span></div>
+    <div class="tools">
+      <span class="lbl">View</span>
+      <div class="grp" id="views">
+        <button data-v="iso" class="on">Iso</button>
+        <button data-v="side">Elevation</button>
+        <button data-v="plan">Plan</button>
+        <button data-v="rear">Rear</button>
+        <button data-v="dryer">Pre-dryer</button>
+        <button data-v="reactor">Reactor</button>
+      </div>
+      <div class="grp">
+        <button id="bCut">Cutaway</button>
+        <button id="bFlow">Process flow</button>
+        <button id="bMod">Module colour</button>
+        <button id="bTags" class="on">Tags</button>
+        <button id="bDim">Dimensions</button>
+      </div>
+      <div class="grp">
+        <button id="bCfg">Transport mode</button>
+        <button id="bShot">Save PNG</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bar" id="left">
+    <div class="ph"><h2>Equipment schedule</h2><em id="cnt"></em></div>
+    <div class="scroll" id="sched"></div>
+    <div id="legend"><h2>Process streams</h2><div id="stlist"></div></div>
+  </div>
+
+  <div class="bar" id="right">
+    <div class="ph"><h2>Specification</h2><em id="selTag">—</em></div>
+    <div class="scroll" id="spec"></div>
+    <div class="kpis">
+      <div class="kpi"><b>100<sub> kg/h</sub></b><span>Feed to reactor</span></div>
+      <div class="kpi"><b>500<sub> °C</sub></b><span>Reactor temp.</span></div>
+      <div class="kpi"><b>35→8<sub> wt%</sub></b><span>Moisture, dryer</span></div>
+      <div class="kpi"><b>32.5<sub> t</sub></b><span>Gross comb. mass</span></div>
+    </div>
+  </div>
+
+  <div class="bar" id="tb">
+    <div><s>PROJECT</s><b>DECENTRALISED BIO-OIL / BIOCHAR</b></div>
+    <div><s>TITLE</s><b>GENERAL ARRANGEMENT — 3D</b></div>
+    <div><s>DRG No.</s><b>MBPU-01-GA-3D</b></div>
+    <div><s>REV</s><b>C</b></div>
+    <div><s>UNITS</s><b>METRE</b></div>
+    <div><s>PROJECTION</s><b>FIRST ANGLE</b></div>
+    <div><s>STATUS</s><b>CONCEPT DESIGN</b></div>
+  </div>
+
+  <div class="bar" id="ex">
+    <label for="exr">Exploded</label>
+    <input type="range" id="exr" min="0" max="100" value="0">
+    <span id="exv">0%</span>
+  </div>
+
+  <div class="mobtabs">
+    <button id="tSched">Schedule</button>
+    <button id="tSpec">Spec</button>
+  </div>
+
+  <div id="hint">DRAG ORBIT · SCROLL ZOOM · RIGHT-DRAG PAN · CLICK ANY ITEM</div>
+</div>
+
+<div id="boot"><p>Assembling general arrangement</p><div class="b"><i></i></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* =======================================================================
+   MBPU-01 — Mobile Biomass Processing Unit
+   Interactive 3D general-arrangement model
+   Axes:  +X = towards rear of vehicle   +Y = up   +Z = near side (kerb)
+   Origin: front bumper of prime mover, ground level, vehicle centreline
+   ======================================================================= */
+const V3 = (x,y,z)=>new THREE.Vector3(x,y,z);
+
+/* ---------------- palette ---------------- */
+const C = {
+  chassis:0x262E37, deck:0x39434E, tyre:0x14181D, hub:0x8A939C,
+  cab:0xE6ECF1, glass:0x0D1620, steel:0xB4BEC8, stainless:0xD3DAE1,
+  hot:0xC5502F, dark:0x2E3640, orange:0xE9A13B, drum:0xA8B2BC,
+  cool:0x5D8FB3, oil:0xB4712F, charc:0x3A4048, copper:0xB1703C,
+  green:0x7E9440, white:0xEDF2F6
+};
+const MODC = { feed:0x93A544, pyro:0xD8593C, vap:0x54BFE0, util:0xE9A13B, plat:0x6E7B87 };
+const MODN = { feed:'100 · Feed handling & pre-drying', pyro:'200 · Pyrolysis & heat supply',
+               vap:'300 · Vapour recovery & storage', util:'400 · Utilities, control & safety',
+               plat:'500 · Mobile platform & structure' };
+
+/* ---------------- equipment register ---------------- */
+const TAGS = {
+'CV-101':{m:'feed',n:'Wet feed hopper, folding',d:'Loader-charged reception hopper with hydraulic live-bottom drag floor. Folds vertically for transport; deployed it clears the rear underrun bar for a 1.5 m³ bucket.',s:[['Working volume','4.0 m³'],['Charge rate','1 bucket / 25 min'],['Live bottom','2 × hyd. drag chains'],['Deploy time','8 min']]},
+'SH-102':{m:'feed',n:'Coarse shredder',d:'Twin-shaft low-speed shredder reducing mill residues, stover bales and forest slash to a nominal 25 mm top size before drying.',s:[['Top size out','≤ 25 mm'],['Throughput','0.4 t/h wet'],['Drive','11 kW hydraulic'],['Tramp protection','Auto-reverse']]},
+'CN-103':{m:'feed',n:'Inclined feed conveyor',d:'Enclosed trough belt lifting shredded feed to the pre-dryer inlet chute. Hinged at the base and stowed flat on deck for transport.',s:[['Belt width','400 mm'],['Lift','1.75 m @ 32°'],['Capacity','0.5 t/h'],['Drive','1.5 kW geared']]},
+'D-110':{m:'feed',n:'Rotary pre-drying drum (in-built)',d:'Co-current single-pass rotary dryer built into the deck and heated entirely by recuperated flue gas from the thermal oxidiser — no separate fuel. Drops feed moisture from 35 wt% to the ≤10 wt% required for stable single-phase bio-oil.',s:[['Shell','Ø1.45 × 3.00 m'],['Inclination','1.5° to discharge'],['Rotation','4 rpm, girth gear'],['Gas inlet','350 °C (co-current)'],['Gas outlet','115 °C'],['Moisture','35 → 8 wt%'],['Water evaporated','41 kg/h'],['Thermal duty','35 kW (recovered)'],['Residence time','12 min'],['Internals','12 lifting flights']]},
+'CY-112':{m:'feed',n:'Dryer exhaust cyclone',d:'High-efficiency reverse-flow cyclone removing entrained fines from the dryer off-gas; catch returns to the dry-feed elevator.',s:[['Barrel','Ø0.70 m'],['Cut size','d₅₀ ≈ 9 µm'],['Efficiency','> 92 wt%'],['ΔP','1.1 kPa']]},
+'BF-114':{m:'feed',n:'Biochar VOC polishing filter',d:'Packed bed using the unit’s own biochar as adsorbent for condensable organics and odour in the dryer vent. Spent media is returned to the biochar product — no secondary waste stream.',s:[['Media','On-site biochar, 60 L'],['Media life','~120 operating h'],['VOC removal','> 80 %'],['Vent temp.','< 120 °C']]},
+'FN-113':{m:'feed',n:'Induced-draught fan & stack',d:'ID fan holds the dryer and oxidiser train under slight vacuum so no hot gas or dust escapes at the seals. Discharges to the telescopic stack.',s:[['Flow','2 900 m³/h'],['Static head','3.4 kPa'],['Motor','5.5 kW VFD'],['Stack','Ø0.35 × 6.2 m (telescopic)']]},
+'HM-120':{m:'feed',n:'Hammer mill',d:'Final size reduction of dried feed to the millimetric particle size fast pyrolysis needs for intra-particle heat transfer.',s:[['Product size','≤ 3 mm'],['Screen','3 mm perforated'],['Throughput','120 kg/h'],['Motor','15 kW']]},
+'SC-121':{m:'feed',n:'Vibrating screen',d:'Two-deck screen; oversize returns to the mill, fines are diverted to the oxidiser to avoid char-bed blinding.',s:[['Decks','2 (3 mm / 0.5 mm)'],['Oversize return','Gravity chute'],['Fines route','To TO-203']]},
+'BN-122':{m:'feed',n:'Dry-feed surge bin',d:'Nitrogen-blanketed buffer decoupling the dryer from the reactor and holding a 30-minute inventory for stable feeding.',s:[['Volume','0.55 m³'],['Buffer','~30 min'],['Blanket','N₂ @ 5 kPa g'],['Level','Radar + rotary paddle']]},
+'FD-123':{m:'feed',n:'Metering screw & rotary airlock',d:'Variable-speed screw with a double rotary valve providing the gas seal between the feed system and the oxygen-free reactor.',s:[['Feed rate','40–120 kg/h'],['Turndown','3 : 1'],['Seal','Double rotary valve'],['Control','Loss-in-weight']]},
+'R-201':{m:'pyro',n:'Twin-screw auger pyrolysis reactor',d:'Horizontal intermeshing twin-screw reactor. Biomass is mixed with recirculating steel-shot heat carrier, giving the >500 °C/s heating rate of fast pyrolysis in a compact, gravity-fed geometry that tolerates road transport far better than a fluidised bed.',s:[['Shell','Ø0.45 × 3.20 m'],['Operating temp.','500 °C'],['Screws','2 × Ø0.20 intermeshing'],['Solids residence','90 s'],['Vapour residence','< 1.5 s'],['Heat carrier','Steel shot, 15:1'],['Atmosphere','Recycled NCG'],['Heat of pyrolysis','2.6 MJ/kg feed'],['Duty','66 kW'],['Insulation','120 mm microporous'],['Materials','253MA / AISI 310S']]},
+'HC-202':{m:'pyro',n:'Heat-carrier heater & riser',d:'Steel shot separated from the char is lifted by a jacketed bucket riser, reheated to 600 °C in the oxidiser flue gas and returned to the reactor inlet through the insulated top duct.',s:[['Circulation','1.5 t/h shot'],['Shot temp.','600 °C'],['Lift height','2.4 m'],['Drive','4 kW, chain riser']]},
+'TO-203':{m:'pyro',n:'Thermal oxidiser & burner',d:'Refractory-lined oxidiser burning recycled non-condensable gas, screen fines and surplus char. LPG is used only for cold start and trim, consistent with the 75 % NCG / 25 % LPG split reported for mobile pyrolysis units.',s:[['Firing duty','130 kW'],['Chamber temp.','850–950 °C'],['Residence','> 0.9 s'],['Fuels','NCG 75 % / LPG 25 %'],['Lining','100 mm ceramic fibre'],['Control','O₂ trim, 3–5 vol%']]},
+'CY-204':{m:'pyro',n:'Hot char cyclones (2 stage)',d:'Series cyclones at 500 °C removing char and entrained ash before condensation. Keeping char out of the oil is the single biggest lever on bio-oil stability.',s:[['Stages','2 in series'],['Barrel','Ø0.45 / Ø0.35 m'],['Cut size','d₅₀ ≈ 6 / 3 µm'],['Solids in vapour','< 0.5 wt%'],['Trace heating','Yes, 480 °C']]},
+'SC-205':{m:'pyro',n:'Char cooling screw',d:'Water-jacketed screw conveyor cooling char below its auto-ignition point before it meets air, with a nitrogen purge at the discharge.',s:[['Length','1.4 m, jacketed'],['Char out','< 60 °C'],['Cooling','Glycol loop, 12 kW'],['Purge','N₂ at outlet']]},
+'BN-206':{m:'pyro',n:'Biochar collection bin',d:'Sealed bin with a quench spray and big-bag station on the kerb side, sized so one shift fills roughly one bag.',s:[['Volume','1.0 m³'],['Output','25 kg/h'],['Discharge','FIBC / big bag'],['Quench','Water mist + N₂']]},
+'HX-207':{m:'pyro',n:'Flue-gas recuperator',d:'Tempers oxidiser flue gas from 950 °C to the 350 °C the dryer inlet needs, and preheats combustion air. This is the link that makes the pre-dryer fuel-free.',s:[['Type','Counter-flow tubular'],['Duty','48 kW'],['Gas out','350 °C to D-110'],['Air preheat','to 180 °C']]},
+'QC-301':{m:'vap',n:'Spray quench column',d:'Direct-contact column quenching vapour from 480 °C to 80 °C in under a second with recirculated cooled bio-oil, arresting secondary cracking and taking out the heavy fraction.',s:[['Column','Ø0.75 × 1.85 m'],['Quench medium','Recirc. bio-oil'],['Vapour in / out','480 / 80 °C'],['Recirc. pump','6 m³/h'],['Heavy-ends cut','≈ 45 % of oil']]},
+'CD-302':{m:'vap',n:'Shell-and-tube condenser',d:'Counter-current condenser on the closed glycol loop recovering the light fraction and process water.',s:[['Area','9 m²'],['Duty','42 kW'],['Coolant','Glycol 20 °C'],['Outlet','35 °C']]},
+'EP-303':{m:'vap',n:'Electrostatic precipitator',d:'Wet-wall ESP collecting the sub-micron oil aerosol that cyclones and condensers cannot — typically worth 8–12 % additional liquid yield.',s:[['Type','Wet-wall, tubular'],['Field','22 kV DC'],['Aerosol removal','> 95 %'],['Yield gain','8–12 %']]},
+'KO-304':{m:'vap',n:'Knock-out drum & demister',d:'Final gas/liquid separation with a wire-mesh demister protecting the recycle blower from carry-over.',s:[['Vessel','Ø0.50 × 1.20 m'],['Demister','316L wire mesh'],['Carry-over','< 20 mg/Nm³']]},
+'BL-305':{m:'vap',n:'NCG recycle blower',d:'Side-channel blower returning non-condensable gas as reactor sweep gas and sending the balance to the oxidiser. This closes the inert-gas loop so no bottled nitrogen is consumed in steady operation.',s:[['Flow','180 Nm³/h'],['Head','25 kPa'],['Motor','5.5 kW ATEX'],['Split','Sweep 40 / Fuel 60 %']]},
+'TK-310':{m:'vap',n:'Bio-oil storage tanks (2)',d:'Two nitrogen-blanketed, insulated tanks mounted low on the deck centreline to keep the centre of gravity down. Sized for roughly three days of production between tanker collections.',s:[['Capacity','2 × 1.5 m³'],['Total','3.0 m³ ≈ 2.9 days'],['Storage temp.','< 30 °C'],['Blanket','N₂, 3 kPa g'],['Material','316L, insulated'],['Output','52 kg/h bio-oil']]},
+'PU-311':{m:'vap',n:'Bio-oil transfer pump',d:'Progressive-cavity pump for tanker offload and quench recirculation, with a filter skid on the discharge.',s:[['Type','Progressive cavity'],['Flow','8 m³/h'],['Offload','1.5 m³ in 12 min'],['Filter','200 µm duplex']]},
+'GS-401':{m:'util',n:'Generator set, 60 kWe',d:'Diesel/bio-oil flex-fuel genset carrying the full electrical load off-grid; waste heat is recovered into the glycol loop.',s:[['Rating','60 kWe prime'],['Site load','38 kW typical'],['Fuel','Diesel / bio-oil blend'],['Enclosure','65 dB(A) @ 7 m']]},
+'CH-402':{m:'util',n:'Closed-circuit cooler',d:'Dry cooler and glycol circuit serving the condenser, char screw and genset — no external water supply is needed on site.',s:[['Duty','75 kW'],['Loop','30 % glycol'],['Fans','2 × EC, VFD'],['Make-up','< 20 L/day']]},
+'NG-403':{m:'util',n:'Nitrogen inerting skid',d:'Cylinder pack for start-up, shutdown purge and emergency inerting of the reactor and bins.',s:[['Storage','4 × 50 L @ 200 bar'],['Purge','12 Nm³ per start'],['Trip','Auto-inert on ESD']]},
+'LP-407':{m:'util',n:'LPG start-up pack',d:'Propane for oxidiser light-off and warm-up; once pyrolysis gas is available the unit runs largely on its own product gas.',s:[['Storage','2 × 47 kg'],['Start-up use','~14 kg per start'],['Warm-up','2.0 h to 500 °C']]},
+'CR-404':{m:'util',n:'Control cabin & MCC',d:'Insulated cabin with the PLC, motor control centre, gas detection and a 21″ HMI. Positioned over the gooseneck so its mass loads the fifth wheel.',s:[['Footprint','1.5 × 2.4 m'],['Control','PLC + SCADA'],['Instruments','62 loops'],['Detection','CO / LEL / flame'],['Comms','4G + satellite']]},
+'FS-405':{m:'util',n:'Fire & gas safety system',d:'Detection, deluge and emergency shutdown. ESD trips feed, opens the N₂ purge and isolates the oxidiser within seconds.',s:[['Zones','4 detection zones'],['Suppression','Water mist + CO₂'],['ESD response','< 5 s'],['Hazard area','Zone 2 / IIB T3']]},
+'OR-406':{m:'util',n:'Hydraulic levelling outriggers',d:'Four screw-jack outriggers taking the process load off the suspension and levelling the deck within ±0.3°, which the rotary dryer and condenser drainage both require.',s:[['Legs','4 × hydraulic'],['Stroke','600 mm'],['Levelling','± 0.3°'],['Ground bearing','180 kPa']]},
+'TR-501':{m:'plat',n:'Prime mover, 6×4',d:'Standard road tractor — it detaches, so one tractor can rotate between several deployed units.',s:[['Configuration','6×4 tractor'],['Power','335 kW'],['Fifth wheel','1 150 mm'],['Kerb mass','8.4 t']]},
+'TL-502':{m:'plat',n:'Tri-axle drop-deck trailer',d:'Purpose-built process trailer. The drop deck buys 350 mm of headroom for the columns while staying inside the 4.0 m transport envelope, and the skid is welded to the chassis as a single structural unit.',s:[['Trailer length','14.10 m (46 ft)'],['Deck length','13.60 m'],['Width','2.55 m (8′4″)'],['Transport height','4.00 m (13′1″)'],['Deck height','1.00 m (main)'],['Axles','3 × 9 t air-suspended'],['Tare','7.2 t'],['Process skid','14.8 t'],['Trailer GVW','23.5 t'],['Combination','32.5 t / 18.8 m'],['Road envelope','Within 13′6″ × 8′6″ (N. America)'],['EU note','Needs 12.5 m deck to meet 16.5 m rule']]}
+};
+
+/* ---------------- process streams ---------------- */
+const STREAMS = [
+ {id:'wet', n:'Wet biomass, 35 wt% H₂O', c:0x93A544, r:.055, pts:[[19.35,2.25,0],[19.2,1.35,0],[18.5,1.28,0],[17.6,1.92,.05],[16.98,2.6,0],[16.95,2.35,-.25]]},
+ {id:'dry1',n:'Drying (in drum)', c:0xC9A03C, r:0, int:1, pts:[[16.9,2.15,-.25],[15.6,2.05,-.25],[14.3,1.98,-.25]]},
+ {id:'dry', n:'Dry feed, ≤8 wt% H₂O', c:0xC9A03C, r:.05, pts:[[14.15,1.72,-.25],[14.02,1.5,-.3],[13.86,1.3,-.5],[13.86,3.62,-.5],[13.6,3.5,-.46],[13.46,2.86,-.44],[13.5,2.6,-.4],[13.62,2.56,-.35]]},
+ {id:'bed', n:'Reactor bed (biomass + shot)', c:0xD8593C, r:0, int:1, pts:[[13.5,2.55,-.35],[12,2.55,-.35],[10.6,2.55,-.35]]},
+ {id:'vap', n:'Pyrolysis vapour, 500 °C', c:0xE0633A, r:.07, pts:[[10.5,2.8,-.35],[10.35,3.15,-.6],[10.35,3.62,-.72],[10.9,3.62,-.72],[10.9,3.3,-.72],[10.2,3.78,-.6],[8.6,3.82,-.55],[7.15,3.78,-.55],[6.95,3.6,-.55]]},
+ {id:'oil', n:'Bio-oil', c:0xB4712F, r:.045, pts:[[6.95,2.15,-.55],[7.2,1.9,-.5],[7.6,1.62,-.62],[8.6,1.55,-.62],[8.6,1.55,.62],[7.4,1.55,.62]]},
+ {id:'ncg', n:'Non-condensable gas', c:0x54BFE0, r:.05, pts:[[9.25,3.42,-.5],[9.62,2.6,-.35],[9.9,2.2,.1],[10.55,1.9,.5],[10.85,1.55,.55]]},
+ {id:'ncg2',n:'NCG sweep gas recycle', c:0x54BFE0, r:.04, pts:[[9.72,2.5,-.2],[10.4,2.05,.1],[12.6,2.0,.12],[13.4,2.15,-.05],[13.55,2.4,-.22]]},
+ {id:'char',n:'Biochar', c:0x79838E, r:.045, pts:[[10.35,2.9,-.72],[10.35,1.75,-.72],[10.6,1.42,-.2],[10.72,1.38,.85],[11.5,1.38,.85],[11.85,1.62,.8]]},
+ {id:'flue',n:'Flue gas / recovered heat', c:0xA9B4BF, r:.075, pts:[[10.9,3.3,.55],[10.55,3.45,.2],[10.25,3.3,-.15],[10.3,2.2,-1.02],[11.5,1.35,-1.06],[15.5,1.35,-1.06],[16.9,1.5,-1.0],[17.05,2.3,-.5],[16.9,2.2,-.28]]},
+ {id:'exh', n:'Dryer exhaust to stack', c:0xA9B4BF, r:.07, pts:[[14.2,2.5,-.25],[14.0,2.85,.4],[13.72,2.9,.92],[13.72,2.05,.92],[13.1,1.9,.9],[13.05,1.5,.9],[13.3,1.7,1.0],[13.3,3.0,1.0]]}
+];
+
+/* ---------------- scene ---------------- */
+let renderer, scene, camera, raycaster, clock;
+const state = {sel:null, cut:false, flow:false, modc:false, tags:true, dims:false, deploy:1, cfgOp:true, explode:0};
+const parts = {};           // tag -> {group, base, dir, anchor}
+const meshes = [];          // all pickable meshes
+const flowGroups = [];      // stream tube + particles
+
+function init(){
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0A1017);
+  scene.fog = new THREE.Fog(0x0A1017, 42, 105);
+
+  camera = new THREE.PerspectiveCamera(34, 1, 0.1, 400);
+  renderer = new THREE.WebGLRenderer({antialias:true, preserveDrawingBuffer:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  document.getElementById('app').prepend(renderer.domElement);
+
+  raycaster = new THREE.Raycaster();
+  clock = new THREE.Clock();
+
+  lights(); ground(); buildAll(); buildStreams(); cacheMaterials();
+  buildUI(); refresh(); bindInput(); onResize(); addEventListener('resize', onResize);
+  setView('iso', true); animate();
+  setTimeout(()=>{const b=document.getElementById('boot');b.style.opacity=0;setTimeout(()=>b.remove(),520);},260);
+}
+
+function lights(){
+  scene.add(new THREE.HemisphereLight(0x9FBBD0, 0x0A1017, .85));
+  const key = new THREE.DirectionalLight(0xFFF4E2, 2.0);
+  key.position.set(14, 20, 16); key.castShadow = true;
+  key.shadow.mapSize.set(2048,2048);
+  const d = 17; const c = key.shadow.camera;
+  c.left=-d; c.right=d; c.top=d; c.bottom=-d; c.near=1; c.far=70;
+  key.shadow.bias = -0.0008; key.target.position.set(11,1.6,0);
+  scene.add(key); scene.add(key.target);
+  const fill = new THREE.DirectionalLight(0x6E9CC4, .7); fill.position.set(-10,7,-14); scene.add(fill);
+  const rim  = new THREE.DirectionalLight(0xE9A13B, .45); rim.position.set(22,4,-8); scene.add(rim);
+}
+
+function ground(){
+  const g = new THREE.Mesh(new THREE.PlaneGeometry(220,220),
+    new THREE.MeshStandardMaterial({color:0x0E161E, roughness:.96, metalness:0}));
+  g.rotation.x = -Math.PI/2; g.position.y = -0.002; g.receiveShadow = true; scene.add(g);
+  const grid = new THREE.GridHelper(120, 120, 0x24384A, 0x16232E);
+  grid.position.set(9,0.004,0); grid.material.opacity=.55; grid.material.transparent=true; scene.add(grid);
+}
+
+/* ---------------- geometry helpers ---------------- */
+function mat(color, opt){
+  return new THREE.MeshStandardMaterial(Object.assign({
+    color:color, roughness:.55, metalness:.55
+  }, opt||{}));
+}
+function add(parent, geo, m, x, y, z){
+  const o = new THREE.Mesh(geo, m.clone());
+  o.position.set(x||0, y||0, z||0);
+  o.castShadow = true; o.receiveShadow = true;
+  parent.add(o); return o;
+}
+const B = (w,h,d)=>new THREE.BoxGeometry(w,h,d);
+const CY = (r1,r2,h,s)=>new THREE.CylinderGeometry(r1,r2,h,s||24);
+function cylX(p,r1,r2,len,m,x,y,z,s){const o=add(p,CY(r1,r2,len,s),m,x,y,z);o.rotation.z=Math.PI/2;return o;}
+function cylZ(p,r1,r2,len,m,x,y,z,s){const o=add(p,CY(r1,r2,len,s),m,x,y,z);o.rotation.x=Math.PI/2;return o;}
+function ring(p,R,r,m,x,y,z,axis){
+  const o=add(p,new THREE.TorusGeometry(R,r,8,26),m,x,y,z);
+  if(axis==='x') o.rotation.y=Math.PI/2; else o.rotation.x=Math.PI/2; return o;
+}
+function pipe(p,a,b,r,m,seg){
+  const A=V3(a[0],a[1],a[2]), Bv=V3(b[0],b[1],b[2]);
+  const dir=new THREE.Vector3().subVectors(Bv,A), len=dir.length();
+  const o=add(p,CY(r,r,len,seg||12),m);
+  o.position.copy(A).add(Bv).multiplyScalar(.5);
+  o.quaternion.setFromUnitVectors(V3(0,1,0), dir.clone().normalize());
+  return o;
+}
+/* insulated vessel: jacket + banding rings */
+function jacket(p, r, len, m, x, y, z, axis){
+  const o = axis==='x' ? cylX(p,r,r,len,m,x,y,z,26) : add(p,CY(r,r,len,26),m,x,y,z);
+  const bm = mat(C.steel,{roughness:.4,metalness:.8});
+  const n = Math.max(2, Math.round(len/0.55));
+  for(let i=0;i<=n;i++){
+    const t = -len/2 + len*i/n;
+    if(axis==='x') ring(p,r+.012,.016,bm,x+t,y,z,'x'); else ring(p,r+.012,.016,bm,x,y+t,z,'y');
+  }
+  return o;
+}
+function railing(p, pts, h, m){
+  const post = mat(m,{roughness:.5,metalness:.5});
+  for(let i=0;i<pts.length-1;i++){
+    const a=pts[i], b=pts[i+1];
+    pipe(p,[a[0],a[1]+h,a[2]],[b[0],b[1]+h,b[2]],.022,post,8);
+    pipe(p,[a[0],a[1]+h*.55,a[2]],[b[0],b[1]+h*.55,b[2]],.017,post,8);
+    const L=Math.hypot(b[0]-a[0],b[2]-a[2]); const n=Math.max(1,Math.round(L/1.1));
+    for(let k=0;k<=n;k++){
+      const t=k/n, x=a[0]+(b[0]-a[0])*t, z=a[2]+(b[2]-a[2])*t, y=a[1]+(b[1]-a[1])*t;
+      pipe(p,[x,y,z],[x,y+h,z],.02,post,8);
+    }
+  }
+}
+function ladder(p, x, z, y0, y1, m){
+  const s=mat(m,{roughness:.5,metalness:.6});
+  pipe(p,[x,y0,z-.22],[x,y1,z-.22],.022,s,8);
+  pipe(p,[x,y0,z+.22],[x,y1,z+.22],.022,s,8);
+  for(let y=y0+.28;y<y1;y+=.3) pipe(p,[x,y,z-.22],[x,y,z+.22],.016,s,6);
+}
+function grate(p, x, y, z, len, wid, m){
+  const g = add(p, B(len,.045,wid), m, x, y, z);
+  return g;
+}
+
+/* register an equipment group */
+function reg(tag, group, dir, anchor){
+  scene.add(group);
+  parts[tag] = {group, base:group.position.clone(), dir:dir||V3(0,1,0), anchor:anchor||V3(0,0,0)};
+  group.traverse(o=>{ if(o.isMesh){ o.userData.tag = tag; meshes.push(o);} });
+}
+function G(x,y,z){ const g=new THREE.Group(); g.position.set(x||0,y||0,z||0); return g; }
+
+/* =======================================================================
+   BUILD — mobile platform
+   ======================================================================= */
+function wheel(p, x, z, r, w, dual){
+  const t = mat(C.tyre,{roughness:.95,metalness:.05});
+  const h = mat(C.hub,{roughness:.4,metalness:.85});
+  const zs = dual ? [z-w*0.58, z+w*0.58] : [z];
+  zs.forEach(zz=>{
+    cylZ(p, r, r, w, t, x, r, zz, 22).userData.noExp = 1;
+    cylZ(p, r*.55, r*.55, w*1.06, h, x, r, zz, 16);
+    cylZ(p, r*.24, r*.24, w*1.2, mat(C.dark), x, r, zz, 10);
+  });
+}
+
+function buildTractor(){
+  const g = G();
+  const ch = mat(C.chassis,{roughness:.6,metalness:.6});
+  const cab = mat(C.cab,{roughness:.42,metalness:.25});
+  const gl  = mat(C.glass,{roughness:.08,metalness:.6,opacity:.72,transparent:true});
+  const st  = mat(C.steel,{roughness:.32,metalness:.9});
+
+  [-0.42,0.42].forEach(z=>{ add(g,B(6.5,.2,.16),ch,3.4,.95,z); });
+  add(g,B(6.4,.1,.9),ch,3.4,.86,0);
+
+  add(g,B(2.35,2.2,2.45),cab,1.5,2.22,0);
+  add(g,B(.06,1.0,2.2),gl,.33,2.72,0);
+  [-1.24,1.24].forEach(z=> add(g,B(1.3,.8,.06),gl,1.2,2.72,z));
+  add(g,B(.9,.5,2.4),cab,2.3,3.55,0);
+  add(g,B(.3,.16,2.5),mat(C.dark),.45,3.35,0);
+  [-.9,.9].forEach(z=>{ add(g,B(.22,.2,.4),mat(0xF0E7C8,{emissive:0x272013}),.35,1.4,z); });
+  add(g,B(.12,.7,2.1),mat(C.dark,{roughness:.7}),.32,1.55,0);
+  [-1.35,1.35].forEach(z=>{ pipe(g,[1.0,2.6,z],[1.0,3.3,z],.03,st,8); add(g,B(.06,.42,.14),mat(C.dark),1.0,3.05,z*1.06); });
+
+  cylX(g,.3,.3,1.35,mat(C.steel,{roughness:.3,metalness:.9}),3.9,1.2,1.02,18);
+  add(g,B(1.2,.5,.16),ch,3.9,1.2,1.02);
+  pipe(g,[2.85,1.1,-1.02],[2.85,3.5,-1.02],.085,st,12);
+  ring(g,.11,.02,st,2.85,3.45,-1.02,'y');
+  [-.75,-.45].forEach(z=> cylX(g,.16,.16,.7,st,3.0,1.05,z,14));
+
+  add(g,B(1.0,.07,1.05),mat(C.steel,{roughness:.35,metalness:.9}),5.2,1.12,0);
+  add(g,B(.5,.22,.7),ch,5.05,1.0,0);
+
+  wheel(g,1.4,-1.05,.52,.3,false); wheel(g,1.4,1.05,.52,.3,false);
+  [4.35,5.6].forEach(x=>{ wheel(g,x,-1.02,.52,.3,true); wheel(g,x,1.02,.52,.3,true); });
+  [-1.16,1.16].forEach(z=>{ add(g,B(2.2,.12,.72),mat(C.dark,{roughness:.8}),4.98,1.24,z); });
+  reg('TR-501', g, V3(-1,0,0), V3(1.5,3.5,0));
+}
+
+function buildTrailer(){
+  const g = G();
+  const ch = mat(C.chassis,{roughness:.6,metalness:.6});
+  const dk = mat(C.deck,{roughness:.7,metalness:.45});
+  const st = mat(C.steel,{roughness:.4,metalness:.8});
+
+  /* gooseneck */
+  add(g,B(2.75,.3,2.5),ch,5.25,1.25,0);
+  add(g,B(2.7,.06,2.46),dk,5.25,1.42,0);
+  add(g,B(.55,.18,1.2),ch,5.2,1.08,0);
+  cylZ(g,.09,.09,.16,st,5.2,1.02,0,14);
+  add(g,B(.9,.55,2.4),ch,6.35,1.12,0);
+
+  /* main deck */
+  [-1.18,1.18].forEach(z=>{ add(g,B(11.5,.34,.14),ch,12.3,.85,z); });
+  for(let x=6.9;x<18;x+=.72) add(g,B(.1,.22,2.3),ch,x,.86,0);
+  add(g,B(11.5,.07,2.5),dk,12.3,1.02,0);
+  add(g,B(11.5,.02,2.42),mat(0x2F3A45,{roughness:.85,metalness:.3}),12.3,1.06,0);
+
+  /* mezzanine over vapour-recovery module */
+  add(g,B(3.75,.05,2.4),mat(0x475462,{roughness:.75,metalness:.5}),8.45,2.08,0);
+  [[6.75,-1.1],[6.75,1.1],[10.2,-1.1],[10.2,1.1],[8.45,-1.15],[8.45,1.15]].forEach(p=>{
+    add(g,B(.1,1.0,.1),ch,p[0],1.55,p[1]); });
+  railing(g,[[6.6,2.1,-1.2],[10.3,2.1,-1.2]],1.05,C.orange);
+  railing(g,[[6.6,2.1,1.2],[10.3,2.1,1.2]],1.05,C.orange);
+  railing(g,[[6.62,2.1,-1.2],[6.62,2.1,1.2]],1.05,C.orange);
+  ladder(g,10.42,1.0,1.05,2.35,C.orange);
+
+  /* wheels, guards, underrun protection */
+  [14.9,16.1,17.3].forEach(x=>{ wheel(g,x,-1.02,.52,.3,true); wheel(g,x,1.02,.52,.3,true);
+    add(g,B(.02,.5,2.2),ch,x,.6,0); });
+  [-1.02,1.02].forEach(z=>{ add(g,B(3.5,.14,.6),mat(C.dark,{roughness:.85}),16.1,1.26,z);
+    add(g,B(6.8,.09,.06),st,11.0,.72,z*1.2);
+    add(g,B(6.8,.09,.06),st,11.0,.5,z*1.2); });
+  add(g,B(.12,.14,2.3),st,18.15,.55,0);
+  [-1.0,1.0].forEach(z=> add(g,B(.12,.5,.12),st,18.1,.8,z));
+  [[-1.12,0xD8593C],[1.12,0xD8593C]].forEach(p=> add(g,B(.05,.22,.3),mat(p[1],{emissive:0x2A0B06}),18.2,1.0,p[0]));
+  [-1.0,1.0].forEach(z=>{ add(g,B(.16,.55,.16),st,7.35,.75,z); add(g,B(.3,.06,.3),st,7.35,.5,z); });
+
+  /* offside folding catwalk (stowed for transport) */
+  const cw = G(); cw.position.set(0,1.9,-1.2);
+  add(cw,B(6.0,.05,.85),mat(0x4A5866,{roughness:.75,metalness:.5}),13.4,0,-.45);
+  railing(cw,[[10.5,0,-.85],[16.4,0,-.85]],1.0,C.orange);
+  for(let x=10.8;x<16.5;x+=1.4) pipe(g,[x,1.9,-1.22],[x,1.35,-0.85],.028,st,8);
+  g.add(cw); g.userData.catwalk = cw;
+  ladder(g,16.55,-1.24,.1,2.05,C.orange);
+
+  reg('TL-502', g, V3(0,0,0), V3(12.3,.75,0));
+  parts['TL-502'].catwalk = cw;
+}
+
+/* =======================================================================
+   BUILD — 100 · feed handling & pre-drying
+   ======================================================================= */
+function buildFeed(){
+  const st = mat(C.steel,{roughness:.45,metalness:.75});
+  const sh = mat(C.stainless,{roughness:.35,metalness:.8});
+  const dkm= mat(C.dark,{roughness:.6,metalness:.5});
+  const grn= mat(C.green,{roughness:.6,metalness:.4});
+
+  /* ---- CV-101 folding wet feed hopper (hinged) ---- */
+  const hop = G(18.35,1.45,0);
+  const body = add(hop,CY(1.5,.62,1.15,4),grn,.85,.62,0); body.rotation.y=Math.PI/4; body.userData.shell=1;
+  const rim = add(hop,CY(1.53,1.53,.07,4),st,.85,1.2,0); rim.rotation.y=Math.PI/4;
+  add(hop,B(1.0,.14,1.7),dkm,.85,.02,0);
+  [-.7,.7].forEach(z=> pipe(hop,[.2,.05,z],[.2,-.42,z],.05,st,10));
+  [-.55,.55].forEach(z=> cylX(hop,.06,.06,1.5,mat(C.orange),.85,.06,z,10));
+  add(hop,B(.55,.1,1.8),st,1.5,-.1,0);
+  scene.add(hop); parts['CV-101']={group:hop,base:hop.position.clone(),dir:V3(0,1.2,0),anchor:V3(19.2,2.6,0),fold:1};
+  hop.traverse(o=>{if(o.isMesh){o.userData.tag='CV-101';meshes.push(o);}});
+
+  /* ---- SH-102 twin-shaft shredder (folds with hopper) ---- */
+  const shr = G(18.35,1.45,0);
+  add(shr,B(.8,.42,1.75),dkm,.85,-.32,0);
+  [-.16,.16].forEach(z=>{ cylX(shr,.17,.17,1.6,mat(0x555F6A,{roughness:.5,metalness:.8}),.85,-.3,z,14); });
+  add(shr,B(.34,.34,.4),st,1.42,-.3,.75);
+  scene.add(shr); parts['SH-102']={group:shr,base:shr.position.clone(),dir:V3(0,.6,0),anchor:V3(19.2,1.15,0),fold:1};
+  shr.traverse(o=>{if(o.isMesh){o.userData.tag='SH-102';meshes.push(o);}});
+
+  /* ---- CN-103 inclined conveyor (hinged) ---- */
+  const cv = G(18.55,1.18,0);
+  add(cv,B(2.3,.34,.62),st,-1.15,0,0);
+  add(cv,B(2.24,.06,.5),mat(0x2A3039,{roughness:.9,metalness:.2}),-1.15,.06,0);
+  add(cv,B(2.3,.1,.66),dkm,-1.15,-.2,0);
+  cylZ(cv,.13,.13,.66,dkm,-2.24,0,0,14); cylZ(cv,.13,.13,.66,dkm,-.06,0,0,14);
+  add(cv,B(.3,.3,.34),dkm,-2.3,-.28,.5);
+  scene.add(cv); parts['CN-103']={group:cv,base:cv.position.clone(),dir:V3(0,.8,0),anchor:V3(17.6,2.35,0),conv:1};
+  cv.traverse(o=>{if(o.isMesh){o.userData.tag='CN-103';meshes.push(o);}});
+
+  /* ---- D-110 rotary pre-drying drum ---- */
+  const dry = G();
+  const tilt = G(15.6,2.15,-.25); tilt.rotation.z = .026;
+  const spin = new THREE.Group(); tilt.add(spin);
+  const shell = add(spin,CY(.725,.725,3.0,30),mat(C.drum,{roughness:.42,metalness:.72}),0,0,0);
+  shell.rotation.z = Math.PI/2; shell.userData.shell = 1;
+  const ins = add(spin,CY(.79,.79,2.86,30),mat(0xC2CAD3,{roughness:.55,metalness:.4}),0,0,0);
+  ins.rotation.z = Math.PI/2; ins.userData.shell = 1;
+  for(let i=0;i<12;i++){
+    const a = i/12*Math.PI*2;
+    const f = add(spin,B(2.8,.17,.035),mat(0x9AA5B0,{roughness:.6,metalness:.7}),0,Math.cos(a)*.63,Math.sin(a)*.63);
+    f.rotation.x = -a;
+  }
+  [-1.05,1.05].forEach(x=>{ const r=add(spin,new THREE.TorusGeometry(.83,.055,8,28),mat(C.steel,{roughness:.3,metalness:.9}),x,0,0); r.rotation.y=Math.PI/2; });
+  const gear = add(spin,new THREE.TorusGeometry(.85,.075,8,44),mat(0x8B949E,{roughness:.45,metalness:.85}),-.55,0,0); gear.rotation.y=Math.PI/2;
+  dry.add(tilt); dry.userData.spin = spin;
+
+  [14.55,16.65].forEach(x=>{ [-.62,.12].forEach(z=>{
+      cylZ(dry,.16,.16,.22,mat(0x707A85,{roughness:.4,metalness:.85}),x,1.5,z-.25+.25,14);
+      add(dry,B(.3,.5,.26),mat(C.chassis),x,1.28,z); }); });
+  add(dry,B(.5,.55,.62),mat(C.dark,{roughness:.6,metalness:.6}),15.05,1.4,.62);
+  cylX(dry,.14,.14,.4,mat(C.steel),15.05,1.55,.3,12);
+  add(dry,B(.34,1.35,1.35),mat(C.stainless,{roughness:.4,metalness:.7}),17.2,2.16,-.25);
+  add(dry,B(.34,1.35,1.35),mat(C.stainless,{roughness:.4,metalness:.7}),14.05,2.12,-.25);
+  add(dry,B(.42,.5,.5),mat(C.stainless),16.95,2.72,-.25);
+  add(dry,CY(.28,.16,.55,14),mat(C.stainless),14.1,1.78,-.25);
+  reg('D-110', dry, V3(0,1.6,0), V3(15.6,3.0,-.25));
+  parts['D-110'].spin = spin;
+
+  /* ---- CY-112 dryer exhaust cyclone ---- */
+  const cyc = G();
+  const b1 = add(cyc,CY(.35,.35,.7,22),sh,13.72,2.42,.92); b1.userData.shell=1;
+  add(cyc,CY(.35,.1,.62,22),sh,13.72,1.96,.92);
+  add(cyc,CY(.12,.12,.5,14),sh,13.72,2.95,.92);
+  add(cyc,B(.4,.26,.1),sh,14.0,2.6,.92);
+  add(cyc,CY(.11,.11,.3,12),st,13.72,1.55,.92);
+  reg('CY-112', cyc, V3(0,1.2,.5), V3(13.72,3.1,.92));
+
+  /* ---- BF-114 biochar VOC filter ---- */
+  const bf = G();
+  const bx = add(bf,B(.6,.85,.8),mat(0x4E5A66,{roughness:.6,metalness:.5}),13.05,2.05,.9); bx.userData.shell=1;
+  add(bf,B(.52,.55,.7),mat(0x23282E,{roughness:.95,metalness:.1}),13.05,2.0,.9);
+  add(bf,B(.64,.06,.84),st,13.05,2.5,.9);
+  pipe(bf,[13.72,2.4,.92],[13.35,2.3,.9],.09,st,10);
+  reg('BF-114', bf, V3(0,1.0,.6), V3(13.05,2.6,.9));
+
+  /* ---- FN-113 ID fan + telescopic stack ---- */
+  const fn = G();
+  cylZ(fn,.3,.3,.26,mat(0x5C6874,{roughness:.5,metalness:.7}),13.05,1.42,.9,20);
+  add(fn,B(.34,.3,.3),mat(C.dark),13.05,1.42,.62);
+  add(fn,B(.24,.5,.24),st,13.28,1.5,.9);
+  const base = add(fn,CY(.21,.21,1.5,18),mat(C.stainless,{roughness:.4,metalness:.75}),13.3,2.3,1.0);
+  base.userData.shell=1;
+  const up = new THREE.Group();
+  const tube = add(up,CY(.165,.165,2.6,18),mat(C.stainless,{roughness:.35,metalness:.8}),13.3,0,1.0);
+  ring(up,.185,.02,st,13.3,1.28,1.0,'y');
+  add(up,B(.1,.2,.1),mat(0xD8593C,{emissive:0x2A0B06}),13.3,1.2,1.0);
+  fn.add(up); up.position.y = 4.35;
+  [-.35,.35].forEach(d=> pipe(fn,[13.3,3.0,1.0],[13.3+d,1.15,1.0+Math.abs(d)*.4],.02,st,6));
+  reg('FN-113', fn, V3(0,1.4,.8), V3(13.3,3.5,1.0));
+  parts['FN-113'].stack = up;
+
+  /* ---- HM-120 hammer mill / SC-121 screen ---- */
+  const hm = G();
+  const hb = add(hm,B(.66,.68,.76),mat(0x5A6572,{roughness:.5,metalness:.7}),14.02,1.42,-.3); hb.userData.shell=1;
+  cylX(hm,.24,.24,.6,mat(0x8B949E,{roughness:.4,metalness:.85}),14.02,1.42,-.3,16);
+  add(hm,CY(.2,.2,.5,14),mat(C.dark),14.36,1.42,-.3).rotation.z=Math.PI/2;
+  add(hm,B(.2,.5,.16),st,14.02,1.42,-.72);
+  add(hm,CY(.22,.14,.32,14),st,14.02,1.88,-.3);
+  reg('HM-120', hm, V3(0,-.9,-.6), V3(14.02,1.85,-.3));
+  const sc = G();
+  const sb = add(sc,B(.55,.3,.6),mat(C.stainless,{roughness:.45,metalness:.7}),14.28,2.12,-.35); sb.rotation.z=-.14;
+  add(sc,B(.5,.02,.52),mat(0x7C8894),14.28,2.12,-.35).rotation.z=-.14;
+  add(sc,B(.2,.24,.2),mat(C.dark),14.55,2.24,-.35);
+  reg('SC-121', sc, V3(.4,.9,-.4), V3(14.3,2.4,-.35));
+
+  /* ---- BN-122 surge bin + elevator ---- */
+  const bn = G();
+  const el = add(bn,B(.3,2.45,.44),mat(0x525E6A,{roughness:.55,metalness:.6}),13.86,2.5,-.5); el.userData.shell=1;
+  add(bn,B(.38,.34,.5),mat(C.dark),13.86,3.72,-.5);
+  add(bn,B(.34,.26,.5),mat(C.dark),13.86,1.32,-.5);
+  const bin = add(bn,CY(.42,.42,.72,22),sh,13.42,3.3,-.46); bin.userData.shell=1;
+  add(bn,CY(.42,.1,.5,22),sh,13.42,2.68,-.46);
+  add(bn,B(.5,.06,.5),st,13.42,3.68,-.46);
+  add(bn,CY(.06,.06,.3,10),st,13.42,3.76,-.46);
+  pipe(bn,[13.86,3.75,-.5],[13.5,3.6,-.47],.08,st,10);
+  [[13.2,-.2],[13.66,-.72]].forEach(p=> add(bn,B(.08,1.5,.08),st,p[0],3.0,p[1]));
+  reg('BN-122', bn, V3(0,1.5,-.5), V3(13.42,3.95,-.46));
+
+  /* ---- FD-123 metering screw + airlock ---- */
+  const fd = G();
+  add(fd,CY(.2,.2,.34,16),mat(C.stainless),13.44,2.36,-.42);
+  cylX(fd,.13,.13,.42,mat(C.stainless,{roughness:.4,metalness:.75}),13.58,2.5,-.4,14);
+  add(fd,B(.22,.24,.26),mat(C.dark),13.36,2.5,-.42);
+  add(fd,CY(.09,.09,.22,12),st,13.7,2.58,-.38);
+  reg('FD-123', fd, V3(.3,.7,-.3), V3(13.5,2.75,-.4));
+}
+
+/* =======================================================================
+   BUILD — 200 · pyrolysis & heat supply
+   ======================================================================= */
+function buildPyro(){
+  const st = mat(C.steel,{roughness:.4,metalness:.8});
+  const sh = mat(C.stainless,{roughness:.32,metalness:.82});
+  const hotm = mat(C.hot,{roughness:.55,metalness:.35});
+  const dkm = mat(C.dark,{roughness:.6,metalness:.5});
+
+  /* ---- R-201 twin-screw auger reactor ---- */
+  const r = G();
+  const jk = jacket(r,.38,3.2,mat(C.stainless,{roughness:.3,metalness:.8}),12.0,2.55,-.35,'x');
+  jk.userData.shell = 1;
+  const shl = cylX(r,.245,.245,3.24,mat(0x9BA6B1,{roughness:.45,metalness:.85}),12.0,2.55,-.35,24);
+  shl.userData.shell = 1;
+  /* twin intermeshing screws (revealed in cutaway) */
+  [-.11,.11].forEach((dz,si)=>{
+    cylX(r,.045,.045,3.3,mat(0xCFA46B,{roughness:.35,metalness:.9}),12.0,2.55,-.35+dz,12);
+    for(let i=0;i<28;i++){
+      const x = 10.5 + i*3.0/27, a = i*0.62 + si*1.6;
+      const f = add(r,B(.028,.30,.30),mat(0xC79A62,{roughness:.4,metalness:.85}),x,2.55,-.35+dz);
+      f.rotation.x = a;
+    }
+  });
+  add(r,CY(.17,.17,.3,16),sh,13.55,2.86,-.35);
+  add(r,CY(.2,.13,.36,16),sh,10.46,2.24,-.35);
+  add(r,B(.52,.6,.7),dkm,13.92,2.55,-.35);
+  cylX(r,.16,.16,.42,mat(0x59636F,{roughness:.5,metalness:.8}),14.3,2.55,-.35,14);
+  add(r,B(.34,.5,.34),hotm,10.62,2.9,-.35);
+  [11.05,12.85].forEach(x=>{ add(r,B(.14,1.15,.5),mat(C.chassis,{roughness:.65,metalness:.55}),x,1.63,-.35);
+    add(r,B(.2,.1,.7),st,x,2.2,-.35); });
+  reg('R-201', r, V3(0,1.7,-.5), V3(12.0,3.0,-.35));
+
+  /* ---- HC-202 heat-carrier riser + shot heater ---- */
+  const hc = G();
+  const cas = add(hc,B(.34,2.35,.46),mat(0x5D6874,{roughness:.5,metalness:.7}),9.95,2.35,-.2); cas.userData.shell=1;
+  add(hc,B(.42,.34,.54),dkm,9.95,3.5,-.2);
+  add(hc,B(.4,.3,.52),dkm,9.95,1.28,-.2);
+  const hv = add(hc,CY(.3,.3,.7,20),mat(C.stainless,{roughness:.35,metalness:.8}),10.12,3.6,-.2); hv.userData.shell=1;
+  ring(hc,.32,.025,st,10.12,3.82,-.2,'y'); ring(hc,.32,.025,st,10.12,3.4,-.2,'y');
+  pipe(hc,[10.2,3.62,-.2],[11.6,3.5,-.14],.115,mat(C.stainless,{roughness:.35,metalness:.8}),14);
+  pipe(hc,[11.6,3.5,-.14],[13.4,3.42,-.2],.115,mat(C.stainless,{roughness:.35,metalness:.8}),14);
+  pipe(hc,[13.4,3.42,-.2],[13.56,3.02,-.34],.1,sh,12);
+  [11.2,12.4,13.2].forEach(x=> ring(hc,.13,.02,st,x,3.55,-.16,'x'));
+  reg('HC-202', hc, V3(-.6,1.4,-.3), V3(10.1,4.0,-.2));
+
+  /* ---- TO-203 thermal oxidiser ---- */
+  const to = G();
+  const ves = jacket(to,.46,2.0,mat(0xC8CFD7,{roughness:.4,metalness:.6}),10.9,2.25,.55,'y');
+  ves.userData.shell = 1;
+  add(to,CY(.4,.4,1.85,22),mat(0xB0553A,{roughness:.9,metalness:.15}),10.9,2.25,.55).userData.shell=1;
+  add(to,CY(.46,.2,.35,22),mat(0xC8CFD7,{roughness:.4,metalness:.6}),10.9,1.15,.55);
+  add(to,CY(.46,.3,.3,22),mat(0xC8CFD7,{roughness:.4,metalness:.6}),10.9,3.4,.55);
+  add(to,B(.4,.36,.5),hotm,10.9,1.55,1.06);
+  cylZ(to,.1,.1,.3,st,10.9,1.55,1.32,12);
+  add(to,B(.26,.26,.3),mat(C.copper,{roughness:.35,metalness:.9}),10.9,2.0,1.02);
+  pipe(to,[10.9,3.5,.55],[10.55,3.55,.2],.13,mat(C.stainless,{roughness:.35,metalness:.8}),14);
+  pipe(to,[10.55,3.55,.2],[10.12,3.6,-.2],.13,mat(C.stainless,{roughness:.35,metalness:.8}),14);
+  [-.28,.28].forEach(d=> pipe(to,[10.9,1.15,.55],[10.9+d,1.05,.55+d*.6],.03,st,6));
+  reg('TO-203', to, V3(.6,1.5,.7), V3(10.9,3.7,.55));
+
+  /* ---- CY-204 hot char cyclones ---- */
+  const cy = G();
+  [[10.35,.24,.19],[10.92,.19,.15]].forEach((c,i)=>{
+    const b = add(cy,CY(c[1],c[1],.55,20),mat(C.stainless,{roughness:.32,metalness:.82}),c[0],3.35,-.72);
+    b.userData.shell=1;
+    add(cy,CY(c[1],.07,.62,20),mat(C.stainless,{roughness:.32,metalness:.82}),c[0],2.8,-.72);
+    add(cy,CY(.08,.08,.34,12),st,c[0],3.75,-.72);
+    add(cy,CY(.06,.06,.7,12),mat(0x6E7883),c[0],2.2,-.72);
+    ring(cy,c[1]+.02,.018,st,c[0],3.5,-.72,'y');
+  });
+  pipe(cy,[10.35,3.78,-.72],[10.92,3.6,-.72],.085,mat(C.stainless),12);
+  pipe(cy,[10.5,2.92,-.4],[10.35,3.15,-.66],.1,mat(C.stainless),12);
+  pipe(cy,[10.92,3.78,-.72],[10.35,3.8,-.6],.09,mat(C.stainless),12);
+  add(cy,B(.16,1.5,.16),mat(C.chassis),10.62,2.0,-1.02);
+  reg('CY-204', cy, V3(-.4,1.5,-1.0), V3(10.6,4.05,-.72));
+
+  /* ---- SC-205 char cooling screw ---- */
+  const cs = G();
+  cylZ(cs,.15,.15,1.6,mat(0x6A7480,{roughness:.5,metalness:.7}),10.58,1.42,.06,16);
+  cylX(cs,.15,.15,1.1,mat(0x6A7480,{roughness:.5,metalness:.7}),11.12,1.38,.85,16);
+  cylX(cs,.185,.185,.95,mat(0x4C93B5,{roughness:.4,metalness:.6,opacity:.85,transparent:true}),11.12,1.38,.85,16).userData.shell=1;
+  add(cs,B(.26,.28,.28),mat(C.dark),10.58,1.42,-.82);
+  add(cs,B(.3,.3,.28),mat(C.dark),10.55,1.38,.85);
+  [[10.9,.4],[11.5,.4]].forEach(p=> pipe(cs,[p[0],1.22,.85],[p[0],1.06,.85],.025,st,6));
+  reg('SC-205', cs, V3(0,-.8,1.0), V3(11.1,1.65,.85));
+
+  /* ---- BN-206 biochar bin ---- */
+  const bb = G();
+  const bx = add(bb,B(.72,.8,.78),mat(0x3E4650,{roughness:.65,metalness:.45}),11.95,1.5,.82); bx.userData.shell=1;
+  add(bb,B(.66,.4,.72),mat(0x1C2026,{roughness:.98,metalness:.05}),11.95,1.4,.82);
+  add(bb,CY(.3,.12,.3,16),mat(0x3E4650),11.95,.98,.82);
+  add(bb,B(.78,.06,.84),st,11.95,1.93,.82);
+  [[-.3,-.3],[-.3,.3],[.3,-.3],[.3,.3]].forEach(p=> add(bb,B(.06,1.1,.06),st,11.95+p[0],1.55,.82+p[1]));
+  add(bb,B(.8,.05,.05),mat(C.orange),11.95,2.12,.82);
+  add(bb,CY(.1,.1,.24,12),st,11.95,2.05,1.16);
+  reg('BN-206', bb, V3(.3,.9,1.2), V3(11.95,2.2,.82));
+
+  /* ---- HX-207 flue-gas recuperator ---- */
+  const hx = G();
+  const s = add(hx,B(.46,.95,.5),mat(0xBEC6CF,{roughness:.4,metalness:.7}),10.3,1.92,-1.0); s.userData.shell=1;
+  for(let i=0;i<6;i++) add(hx,CY(.03,.03,.85,8),mat(C.copper,{roughness:.35,metalness:.9}),10.3+(i%3-1)*.13,1.92,-1.0+(i<3?-.11:.11));
+  add(hx,B(.52,.08,.56),st,10.3,2.42,-1.0);
+  add(hx,B(.52,.08,.56),st,10.3,1.42,-1.0);
+  pipe(hx,[10.12,3.4,-.2],[10.3,2.45,-1.0],.12,mat(C.stainless,{roughness:.35,metalness:.8}),14);
+  pipe(hx,[10.3,1.45,-1.0],[10.9,1.35,-1.06],.12,mat(0xC2CAD3,{roughness:.5,metalness:.55}),14);
+  /* insulated flue duct to the pre-dryer — the link that makes drying fuel-free */
+  const duct = mat(0xC2CAD3,{roughness:.5,metalness:.55});
+  pipe(hx,[10.9,1.35,-1.06],[16.35,1.35,-1.06],.12,duct,16);
+  for(let x=11.4;x<16.4;x+=.85) ring(hx,.135,.02,st,x,1.35,-1.06,'x');
+  pipe(hx,[16.35,1.35,-1.06],[16.98,1.72,-.9],.12,duct,12);
+  pipe(hx,[16.98,1.72,-.9],[17.05,2.16,-.42],.12,duct,12);
+  [12.2,14.0,15.6].forEach(x=> add(hx,B(.1,.34,.1),mat(C.chassis),x,1.15,-1.06));
+  reg('HX-207', hx, V3(0,0,-1.6), V3(10.3,2.6,-1.0));
+}
+
+/* =======================================================================
+   BUILD — 300 · vapour recovery & storage
+   ======================================================================= */
+function buildVapour(){
+  const st = mat(C.steel,{roughness:.4,metalness:.8});
+  const cool = mat(C.cool,{roughness:.4,metalness:.6});
+  const sh = mat(C.stainless,{roughness:.3,metalness:.82});
+
+  /* ---- QC-301 spray quench column ---- */
+  const q = G();
+  const col = add(q,CY(.375,.375,1.6,24),sh,6.95,3.0,-.55); col.userData.shell=1;
+  add(q,CY(.375,.2,.34,24),sh,6.95,2.06,-.55);
+  add(q,CY(.375,.2,.3,24),sh,6.95,3.82,-.55);
+  add(q,CY(.34,.34,.5,20),mat(0x8B949E,{roughness:.75,metalness:.5}),6.95,3.1,-.55);
+  [3.5,3.62].forEach(y=> ring(q,.2,.03,cool,6.95,y,-.55,'y'));
+  add(q,B(.2,.16,.2),cool,6.95,3.56,-.2);
+  pipe(q,[6.95,2.0,-.55],[6.95,1.85,-.55],.09,sh,12);
+  ring(q,.4,.028,st,6.95,2.42,-.55,'y'); ring(q,.4,.028,st,6.95,3.62,-.55,'y');
+  add(q,CY(.11,.11,.4,14),sh,7.16,3.7,-.4).rotation.z=-.5;
+  reg('QC-301', q, V3(-.9,1.2,-.6), V3(6.95,4.15,-.55));
+
+  /* ---- CD-302 shell & tube condenser ---- */
+  const c = G();
+  const s2 = add(c,CY(.28,.28,1.35,22),mat(0xB9C3CC,{roughness:.35,metalness:.8}),7.75,2.95,-.55); s2.userData.shell=1;
+  for(let i=0;i<9;i++){ const a=i/9*Math.PI*2;
+    add(c,CY(.022,.022,1.25,8),mat(C.copper,{roughness:.3,metalness:.92}),7.75+Math.cos(a)*.15,2.95,-.55+Math.sin(a)*.15); }
+  add(c,CY(.3,.3,.1,22),st,7.75,3.66,-.55); add(c,CY(.3,.3,.1,22),st,7.75,2.24,-.55);
+  add(c,CY(.28,.16,.26,22),mat(0xB9C3CC),7.75,3.82,-.55);
+  [2.6,3.3].forEach((y,i)=>{ const p=pipe(c,[7.75,y,-.55],[7.75,y,-.9],.05,cool,10); });
+  pipe(c,[6.95,3.76,-.55],[7.75,3.78,-.55],.08,sh,12);
+  reg('CD-302', c, V3(-.3,1.2,-.9), V3(7.75,4.0,-.55));
+
+  /* ---- EP-303 electrostatic precipitator ---- */
+  const e = G();
+  const eb = add(e,CY(.33,.33,1.35,24),sh,8.55,2.9,-.55); eb.userData.shell=1;
+  add(e,CY(.33,.18,.3,24),sh,8.55,2.06,-.55);
+  add(e,CY(.33,.24,.24,24),sh,8.55,3.69,-.55);
+  for(let i=0;i<4;i++){ const a=i/4*Math.PI*2;
+    add(e,CY(.016,.016,1.25,6),mat(0xD7DEE5,{roughness:.3,metalness:.9}),8.55+Math.cos(a)*.14,2.9,-.55+Math.sin(a)*.14); }
+  add(e,B(.28,.24,.28),mat(0xE3E8ED,{roughness:.25,metalness:.2}),8.55,3.84,-.55);
+  pipe(e,[8.55,3.84,-.4],[8.7,2.6,-.32],.022,mat(C.orange),8);
+  pipe(e,[7.75,3.78,-.55],[8.55,3.78,-.55],.08,sh,12);
+  ring(e,.35,.025,st,8.55,3.4,-.55,'y'); ring(e,.35,.025,st,8.55,2.45,-.55,'y');
+  reg('EP-303', e, V3(.3,1.2,-.9), V3(8.55,4.5,-.55));
+
+  /* ---- KO-304 knock-out drum ---- */
+  const k = G();
+  const kb = add(k,CY(.25,.25,.95,20),sh,9.25,2.85,-.5); kb.userData.shell=1;
+  add(k,CY(.25,.14,.22,20),sh,9.25,2.28,-.5);
+  add(k,CY(.25,.14,.2,20),sh,9.25,3.42,-.5);
+  add(k,CY(.21,.21,.16,18),mat(0x99A3AD,{roughness:.8,metalness:.5}),9.25,3.16,-.5);
+  pipe(k,[8.55,3.78,-.55],[9.25,3.5,-.5],.075,sh,12);
+  pipe(k,[9.25,2.25,-.5],[9.25,2.1,-.5],.05,sh,10);
+  reg('KO-304', k, V3(.7,1.0,-.9), V3(9.25,3.6,-.5));
+
+  /* ---- BL-305 NCG recycle blower ---- */
+  const b = G();
+  cylX(b,.24,.24,.22,mat(0x5E6A76,{roughness:.5,metalness:.75}),9.66,2.42,-.3,20);
+  add(b,B(.3,.28,.3),mat(C.dark),9.66,2.42,-.05);
+  add(b,B(.44,.08,.5),st,9.66,2.18,-.2);
+  pipe(b,[9.25,3.5,-.5],[9.64,2.62,-.3],.06,mat(C.cool,{roughness:.4,metalness:.6}),10);
+  reg('BL-305', b, V3(1.0,.8,-.6), V3(9.66,2.7,-.3));
+
+  /* ---- TK-310 bio-oil storage tanks ---- */
+  const t = G();
+  [-.62,.62].forEach(z=>{
+    const tk = cylX(t,.42,.42,2.4,mat(0xCBD3DA,{roughness:.35,metalness:.72}),7.9,1.5,z,24); tk.userData.shell=1;
+    [6.7,9.1].forEach(x=>{ const d=add(t,new THREE.SphereGeometry(.42,20,12,0,Math.PI*2,0,Math.PI/2),
+        mat(0xCBD3DA,{roughness:.35,metalness:.72}),x,1.5,z); d.rotation.z = x<8?Math.PI/2:-Math.PI/2; });
+    [7.2,8.6].forEach(x=> add(t,B(.16,.5,.9),mat(C.chassis,{roughness:.65,metalness:.5}),x,1.25,z));
+    add(t,B(1.1,.02,.5),mat(C.oil),7.9,1.92,z);
+    add(t,CY(.1,.1,.16,12),mat(C.steel),7.6,1.94,z);
+    add(t,CY(.06,.06,.3,10),mat(C.cool),8.4,2.0,z);
+    for(let x=6.9;x<9.0;x+=.6) ring(t,.435,.018,mat(C.steel),x,1.5,z,'x');
+  });
+  reg('TK-310', t, V3(0,-1.0,0), V3(7.9,2.05,.62));
+
+  /* ---- PU-311 bio-oil transfer pump ---- */
+  const p = G();
+  add(p,B(.5,.1,.4),mat(C.chassis),9.45,1.12,.62);
+  cylX(p,.1,.1,.44,mat(0x8B949E,{roughness:.4,metalness:.85}),9.5,1.32,.62,14);
+  add(p,B(.3,.26,.26),mat(0x2E6F8E,{roughness:.5,metalness:.6}),9.2,1.32,.62);
+  add(p,CY(.09,.09,.3,12),mat(C.oil),9.45,1.6,.62);
+  pipe(p,[9.1,1.35,.62],[8.6,1.5,.62],.045,mat(C.oil),10);
+  reg('PU-311', p, V3(1.0,.4,1.0), V3(9.4,1.7,.62));
+}
+
+/* =======================================================================
+   BUILD — 400 · utilities, control & safety
+   ======================================================================= */
+function buildUtil(){
+  const st = mat(C.steel,{roughness:.4,metalness:.8});
+  const dkm = mat(C.dark,{roughness:.6,metalness:.5});
+
+  /* ---- CR-404 control cabin ---- */
+  const cr = G();
+  add(cr,B(1.5,2.05,2.4),mat(C.white,{roughness:.5,metalness:.2}),4.75,2.48,0);
+  add(cr,B(.06,.62,1.5),mat(C.glass,{roughness:.1,metalness:.6,opacity:.7,transparent:true}),5.52,2.85,0);
+  add(cr,B(.7,.62,.06),mat(C.glass,{roughness:.1,metalness:.6,opacity:.7,transparent:true}),4.9,2.85,1.22);
+  add(cr,B(.55,1.7,.05),mat(0xB9C3CC,{roughness:.45,metalness:.6}),4.35,2.35,1.21);
+  add(cr,B(.06,.1,.05),mat(C.orange),4.6,2.35,1.24);
+  add(cr,B(1.56,.1,2.46),mat(0xC7CFD7,{roughness:.5,metalness:.5}),4.75,3.55,0);
+  add(cr,B(.4,.3,.4),mat(0x2A313A),4.4,3.75,-.7);
+  pipe(cr,[4.4,3.6,.7],[4.4,3.9,.7],.02,st,8);
+  add(cr,B(.34,.42,.06),mat(0x1C222A,{emissive:0x0B2430}),5.49,2.85,-.7);
+  [-1.0,1.0].forEach(z=> add(cr,B(.1,.1,.1),mat(0xF0E7C8,{emissive:0x2A2417}),5.5,3.4,z));
+  add(cr,B(.9,.06,.9),mat(0x4A5866),5.7,1.45,.8);
+  ladder(cr,5.62,.8,1.45,2.0,C.orange);
+  reg('CR-404', cr, V3(-1.4,.6,0), V3(4.75,3.9,0));
+
+  /* ---- GS-401 genset + CH-402 cooler ---- */
+  const gs = G();
+  const box = add(gs,B(.95,1.05,2.3),mat(0x59636F,{roughness:.55,metalness:.6}),6.05,1.95,0); box.userData.shell=1;
+  cylX(gs,.26,.26,.8,mat(0x3A424C,{roughness:.6,metalness:.7}),6.05,1.9,-.4,16);
+  add(gs,B(.5,.5,.5),mat(0x7C8894,{roughness:.4,metalness:.85}),6.05,1.9,.55);
+  for(let i=0;i<7;i++) add(gs,B(.02,.06,2.1),mat(0x2E353D),5.62,1.6+i*.13,0);
+  pipe(gs,[6.4,2.45,-.8],[6.4,3.1,-.8],.06,st,10);
+  reg('GS-401', gs, V3(-1.2,.9,-.6), V3(6.05,2.55,0));
+  const ch = G();
+  const cbx = add(ch,B(.92,.44,2.2),mat(0x6E7A86,{roughness:.5,metalness:.65}),6.05,2.72,0); cbx.userData.shell=1;
+  [-.55,.55].forEach(z=> add(ch,CY(.3,.3,.1,20),mat(0x2E353D),6.05,2.95,z));
+  [-.55,.55].forEach(z=> add(ch,CY(.28,.28,.04,20),mat(0x8B949E),6.05,2.99,z));
+  add(ch,B(.96,.06,2.24),st,6.05,2.5,0);
+  reg('CH-402', ch, V3(-1.2,1.4,.6), V3(6.05,3.05,0));
+
+  /* ---- NG-403 nitrogen pack ---- */
+  const ng = G();
+  add(ng,B(.44,.08,1.0),mat(C.chassis),6.78,1.1,-.9);
+  for(let i=0;i<4;i++) add(ng,CY(.11,.11,1.25,14),mat(0x2E4F6B,{roughness:.45,metalness:.7}),6.78,1.72,-1.24+i*.23);
+  add(ng,B(.5,.06,1.05),mat(C.orange),6.78,2.42,-.9);
+  add(ng,B(.3,.24,.2),mat(0xB9C3CC),6.78,2.2,-.5);
+  reg('NG-403', ng, V3(-.6,.8,-1.2), V3(6.78,2.55,-.9));
+
+  /* ---- LP-407 LPG start-up pack ---- */
+  const lp = G();
+  [-.16,.16].forEach(d=> add(lp,CY(.18,.18,.86,16),mat(0xC7CDD3,{roughness:.4,metalness:.6}),6.78,1.5,.86+d*1.4));
+  add(lp,B(.5,.06,1.0),mat(C.chassis),6.78,1.08,.86);
+  add(lp,B(.44,.5,.04),mat(0xE9A13B),6.78,1.6,1.32);
+  add(lp,B(.5,.06,1.0),mat(C.orange),6.78,2.0,.86);
+  reg('LP-407', lp, V3(-.6,.8,1.2), V3(6.78,2.1,.86));
+
+  /* ---- FS-405 fire & gas ---- */
+  const fs = G();
+  add(fs,B(.3,.5,.4),mat(0xC03A28,{roughness:.5,metalness:.35}),6.95,1.35,.16);
+  [-.09,.09].forEach(d=> add(fs,CY(.08,.08,.5,12),mat(0xC03A28),6.95,1.35,.16+d));
+  add(fs,B(.24,.3,.24),mat(0x1F252C),6.95,1.75,.16);
+  for(let x=8.0;x<17;x+=2.6) add(fs,CY(.03,.03,.16,10),mat(0xC03A28),x,3.78,0);
+  for(let x=8.0;x<17;x+=2.6) pipe(fs,[x,3.74,0],[x,3.5,0],.014,mat(0xC03A28),6);
+  reg('FS-405', fs, V3(0,.6,1.4), V3(6.95,2.0,.16));
+
+  /* ---- OR-406 hydraulic levelling outriggers ---- */
+  const or = G();
+  [[7.05,-1.16],[7.05,1.16],[16.6,-1.16],[16.6,1.16]].forEach(p=>{
+    add(or,B(.24,.36,.4),mat(C.chassis,{roughness:.6,metalness:.6}),p[0],1.0,p[1]);
+    const leg = new THREE.Group();
+    add(leg,CY(.07,.07,.95,12),mat(0x9AA5B0,{roughness:.3,metalness:.9}),p[0],0,p[1]);
+    add(leg,CY(.2,.2,.07,16),mat(C.dark),p[0],-.5,p[1]);
+    or.add(leg); (or.userData.legs = or.userData.legs||[]).push(leg);
+    leg.position.y = 0.55;
+  });
+  reg('OR-406', or, V3(0,-.5,0), V3(7.05,1.2,1.16));
+  parts['OR-406'].legs = or.userData.legs;
+}
+
+/* =======================================================================
+   BUILD — assembly, streams, dimensions
+   ======================================================================= */
+function buildAll(){ buildTractor(); buildTrailer(); buildFeed(); buildPyro(); buildVapour(); buildUtil(); buildDims(); }
+
+const tubes = [];
+function buildStreams(){
+  STREAMS.forEach(s=>{
+    const pts = s.pts.map(p=>V3(p[0],p[1],p[2]));
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', .35);
+    const rec = {def:s, curve, parts:[]};
+    if(s.r > 0){
+      const geo = new THREE.TubeGeometry(curve, Math.max(24, pts.length*10), s.r, 10, false);
+      const m = new THREE.Mesh(geo, mat(0x8D98A4,{roughness:.4,metalness:.8}));
+      m.castShadow = true; m.userData.stream = 1; m.userData.sc = s.c;
+      scene.add(m); tubes.push(m); rec.tube = m;
+    }
+    const n = s.int ? 5 : 4;
+    for(let i=0;i<n;i++){
+      const p = new THREE.Mesh(new THREE.SphereGeometry(s.int?.075:.058, 10, 8),
+        new THREE.MeshBasicMaterial({color:s.c}));
+      p.visible = false; p.userData.t = i/n; scene.add(p); rec.parts.push(p);
+    }
+    flowGroups.push(rec);
+  });
+}
+
+const dimObjs = [], dimLabels = [];
+function dimLine(a, b, txt){
+  const m = new THREE.LineBasicMaterial({color:0x54BFE0, transparent:true, opacity:.9});
+  const g = new THREE.BufferGeometry().setFromPoints([V3(a[0],a[1],a[2]), V3(b[0],b[1],b[2])]);
+  const l = new THREE.Line(g, m); l.visible=false; scene.add(l); dimObjs.push(l);
+  const d = document.createElement('div'); d.className='dim-lab'; d.textContent = txt; d.style.display='none';
+  document.getElementById('labels').appendChild(d);
+  dimLabels.push({el:d, p:V3((a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2)});
+  [a,b].forEach(p=>{
+    const t = new THREE.Line(new THREE.BufferGeometry().setFromPoints(
+      [V3(p[0],p[1],p[2]), V3(p[0], p[1]+ (a[1]===b[1]?.28:0), p[2] + (a[1]===b[1]&&a[2]===b[2]?.28:0))]), m);
+    t.visible=false; scene.add(t); dimObjs.push(t);
+  });
+}
+function buildDims(){
+  dimLine([0,.04,1.85],[18.79,.04,1.85],'TRANSPORT LENGTH 18 800');
+  dimLine([4.4,.04,-1.9],[18.0,.04,-1.9],'DECK 13 600');
+  dimLine([19.0,.04,-1.275],[19.0,.04,1.275],'WIDTH 2 550');
+  dimLine([19.6,0,0],[19.6,4.0,0],'TRANSPORT HEIGHT 4 000');
+}
+
+function cacheMaterials(){
+  meshes.forEach(o=>{
+    o.userData.bc = o.material.color.getHex();
+    o.userData.bo = o.material.opacity;
+    o.userData.bt = o.material.transparent;
+  });
+}
+
+/* =======================================================================
+   MATERIAL STATE
+   ======================================================================= */
+function setT(m, tr){ if(m.transparent !== tr){ m.transparent = tr; m.needsUpdate = true; } }
+function refresh(){
+  const sel = state.sel;
+  meshes.forEach(o=>{
+    const t = o.userData.tag, info = TAGS[t], m = o.material;
+    m.color.setHex(state.modc && info ? MODC[info.m] : o.userData.bc);
+    let op = o.userData.bo, tr = o.userData.bt;
+    if(state.cut && o.userData.shell){ op = Math.min(op,.14); tr = true; }
+    if(sel){
+      if(t === sel){ m.emissive.setHex(0x14424F); }
+      else { m.emissive.setHex(0x000000); op = Math.min(op,.055); tr = true; }
+    } else m.emissive.setHex(0x000000);
+    m.opacity = op; setT(m, tr); m.depthWrite = op > .55;
+  });
+  tubes.forEach(m=>{
+    m.material.color.setHex(state.flow ? m.userData.sc : 0x8D98A4);
+    m.material.emissive.setHex(state.flow ? m.userData.sc : 0x000000);
+    m.material.emissiveIntensity = .22;
+    const op = sel ? .12 : 1; m.material.opacity = op; setT(m.material, op < 1);
+  });
+  flowGroups.forEach(f=> f.parts.forEach(p=> p.visible = state.flow));
+  dimObjs.forEach(o=> o.visible = state.dims);
+  dimLabels.forEach(l=> l.el.style.display = state.dims ? 'block' : 'none');
+  document.querySelectorAll('#sched .row').forEach(r=> r.classList.toggle('on', r.dataset.t === sel));
+  document.querySelectorAll('#labels .lab').forEach(l=>{
+    l.classList.toggle('on', l.dataset.t === sel);
+    l.classList.toggle('dim', !!sel && l.dataset.t !== sel);
+  });
+}
+
+/* =======================================================================
+   UI
+   ======================================================================= */
+function buildUI(){
+  const sched = document.getElementById('sched');
+  const groups = {};
+  Object.keys(TAGS).forEach(t=>{ (groups[TAGS[t].m] = groups[TAGS[t].m] || []).push(t); });
+  Object.keys(MODN).forEach(k=>{
+    const d = document.createElement('div'); d.className = 'mod';
+    const h = document.createElement('h3');
+    h.innerHTML = '<i style="background:#'+MODC[k].toString(16).padStart(6,'0')+'"></i>' +
+                  MODN[k] + '<u>' + groups[k].length + '</u>';
+    d.appendChild(h);
+    const body = document.createElement('div');
+    groups[k].forEach(t=>{
+      const r = document.createElement('div'); r.className='row'; r.dataset.t = t;
+      r.innerHTML = '<code>'+t+'</code><span>'+TAGS[t].n+'</span>';
+      r.onclick = ()=>{ select(t); focusOn(t); };
+      body.appendChild(r);
+    });
+    d.appendChild(body);
+    h.onclick = ()=>{ body.style.display = body.style.display==='none' ? 'block' : 'none'; };
+    sched.appendChild(d);
+  });
+  document.getElementById('cnt').textContent = Object.keys(TAGS).length + ' ITEMS';
+
+  const sl = document.getElementById('stlist');
+  const seen = {};
+  STREAMS.forEach(s=>{
+    if(seen[s.n]) return; seen[s.n]=1;
+    const d = document.createElement('div'); d.className='st';
+    d.innerHTML = '<i style="background:#'+s.c.toString(16).padStart(6,'0')+'"></i>'+s.n;
+    sl.appendChild(d);
+  });
+
+  /* tag bubbles */
+  const LAB = ['CV-101','D-110','HM-120','BN-122','R-201','HC-202','TO-203','CY-204','BN-206','HX-207',
+               'QC-301','EP-303','TK-310','BL-305','GS-401','CR-404','FN-113','TL-502'];
+  const holder = document.getElementById('labels');
+  LAB.forEach((t,i)=>{
+    const el = document.createElement('div'); el.className='lab'; el.dataset.t=t; el.textContent=t;
+    el.onclick = ()=> select(state.sel===t ? null : t);
+    holder.appendChild(el);
+    parts[t].label = el; parts[t].labAng = i;
+  });
+  showSpec(null);
+}
+
+function showSpec(t){
+  const el = document.getElementById('spec');
+  document.getElementById('selTag').textContent = t || '—';
+  if(!t){
+    el.innerHTML = '<div class="empty"><b>NO ITEM SELECTED</b>'+
+      'Pick any item from the equipment schedule, or click it in the model, to read its duty and design data.'+
+      '<br><br>The unit converts wet field residues into bio-oil, biochar and process gas at the point of collection. '+
+      'Its rotary pre-dryer <b style="display:inline;color:#E9A13B;font-family:var(--mono)">D-110</b> runs entirely on '+
+      'recovered oxidiser flue gas, so drying costs the process no fuel.</div>';
+    return;
+  }
+  const d = TAGS[t];
+  el.innerHTML = '<div class="tag">'+t+' · '+MODN[d.m].split('·')[0].trim()+'</div>'+
+    '<h4>'+d.n+'</h4><div class="duty">'+d.d+'</div><table>'+
+    d.s.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>';
+  el.scrollTop = 0;
+}
+function select(t){ state.sel = t; showSpec(t); refresh();
+  if(t && innerWidth<=940){ document.body.classList.add('t-spec'); document.body.classList.remove('t-sched'); } }
+
+/* =======================================================================
+   CAMERA
+   ======================================================================= */
+const cam = {th:-.85, ph:1.13, d:27, t:V3(11,1.95,0), gth:-.85, gph:1.13, gd:27, gt:V3(11,1.95,0)};
+const VIEWS = {
+  iso:   {th:-.85, ph:1.13, d:27,  t:[11,1.95,0]},
+  side:  {th:1.5708, ph:1.5708, d:25, t:[10.5,2.1,0]},
+  plan:  {th:-1.5708, ph:.035, d:26, t:[10.5,1.6,0]},
+  rear:  {th:.12,  ph:1.28, d:17,  t:[14.5,2.1,0]},
+  dryer: {th:-1.15, ph:1.18, d:8.5, t:[15.6,2.35,-.2]},
+  reactor:{th:-2.15,ph:1.2,  d:9,   t:[11.7,2.8,-.3]}
+};
+function setView(n, instant){
+  const v = VIEWS[n]; if(!v) return;
+  cam.gth=v.th; cam.gph=v.ph; cam.gd=v.d; cam.gt.set(v.t[0],v.t[1],v.t[2]);
+  if(instant){ cam.th=cam.gth; cam.ph=cam.gph; cam.d=cam.gd; cam.t.copy(cam.gt); }
+  document.querySelectorAll('#views button').forEach(b=> b.classList.toggle('on', b.dataset.v===n));
+}
+function focusOn(t){
+  const p = parts[t]; if(!p) return;
+  const box = new THREE.Box3().setFromObject(p.group);
+  if(!isFinite(box.min.x)) return;
+  const c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
+  cam.gt.copy(c); cam.gd = Math.max(4.2, Math.max(s.x,s.y,s.z)*2.3 + 2.2);
+  cam.gph = 1.16; cam.gth = c.z > .2 ? .55 : -1.15;
+  document.querySelectorAll('#views button').forEach(b=> b.classList.remove('on'));
+}
+function camPos(){
+  const sp = Math.sin(cam.ph);
+  return V3(cam.t.x + cam.d*sp*Math.cos(cam.th), cam.t.y + cam.d*Math.cos(cam.ph), cam.t.z + cam.d*sp*Math.sin(cam.th));
+}
+
+/* =======================================================================
+   INPUT
+   ======================================================================= */
+function bindInput(){
+  const el = renderer.domElement;
+  let down=false, pan=false, lx=0, ly=0, moved=0, pts={}, pinch=0;
+  el.addEventListener('contextmenu', e=>e.preventDefault());
+  el.addEventListener('pointerdown', e=>{
+    el.setPointerCapture(e.pointerId); pts[e.pointerId]=[e.clientX,e.clientY];
+    down=true; pan = (e.button===2 || e.shiftKey); lx=e.clientX; ly=e.clientY; moved=0;
+    const k=Object.keys(pts); if(k.length===2) pinch = Math.hypot(pts[k[0]][0]-pts[k[1]][0], pts[k[0]][1]-pts[k[1]][1]);
+  });
+  el.addEventListener('pointermove', e=>{
+    if(pts[e.pointerId]) pts[e.pointerId]=[e.clientX,e.clientY];
+    const k=Object.keys(pts);
+    if(k.length===2){
+      const nd = Math.hypot(pts[k[0]][0]-pts[k[1]][0], pts[k[0]][1]-pts[k[1]][1]);
+      if(pinch) cam.gd = clamp(cam.gd * (pinch/nd), 3.5, 70);
+      pinch = nd; moved = 99; return;
+    }
+    if(!down) return;
+    const dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY; moved += Math.abs(dx)+Math.abs(dy);
+    if(pan){
+      const p = camPos(), f = new THREE.Vector3().subVectors(cam.t,p).normalize();
+      const right = new THREE.Vector3().crossVectors(f, V3(0,1,0)).normalize();
+      const up = new THREE.Vector3().crossVectors(right, f).normalize();
+      const k2 = cam.d*.0013;
+      cam.gt.addScaledVector(right, -dx*k2).addScaledVector(up, dy*k2);
+    } else {
+      cam.gth -= dx*.006; cam.gph = clamp(cam.gph - dy*.006, .03, 1.56);
+    }
+  });
+  const up = e=>{
+    delete pts[e.pointerId]; if(Object.keys(pts).length<2) pinch=0;
+    if(down && moved<6 && !pan) pick(e);
+    down=false; pan=false;
+  };
+  el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  el.addEventListener('wheel', e=>{ e.preventDefault(); cam.gd = clamp(cam.gd * (1 + Math.sign(e.deltaY)*.11), 3.5, 70); }, {passive:false});
+
+  function pick(e){
+    const r = el.getBoundingClientRect();
+    const m = new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1);
+    raycaster.setFromCamera(m, camera);
+    const hits = raycaster.intersectObjects(meshes, false).filter(h=> h.object.material.opacity > .2);
+    select(hits.length ? hits[0].object.userData.tag : null);
+  }
+
+  document.querySelectorAll('#views button').forEach(b=> b.onclick = ()=> setView(b.dataset.v));
+  const tog = (id, key, after)=>{ const b=document.getElementById(id);
+    b.onclick = ()=>{ state[key] = !state[key]; b.classList.toggle('on', state[key]); refresh(); if(after) after(); }; };
+  tog('bCut','cut'); tog('bFlow','flow'); tog('bMod','modc'); tog('bTags','tags'); tog('bDim','dims');
+  document.getElementById('bCfg').onclick = function(){
+    state.cfgOp = !state.cfgOp; this.classList.toggle('on', !state.cfgOp);
+    this.textContent = state.cfgOp ? 'Transport mode' : 'Operating mode';
+  };
+  document.getElementById('exr').oninput = function(){
+    state.explode = +this.value/100; document.getElementById('exv').textContent = this.value+'%';
+  };
+  document.getElementById('bShot').onclick = ()=>{
+    renderer.render(scene, camera);
+    const a = document.createElement('a');
+    a.download = 'MBPU-01-GA-3D.png'; a.href = renderer.domElement.toDataURL('image/png'); a.click();
+  };
+  const t1=document.getElementById('tSched'), t2=document.getElementById('tSpec');
+  t1.onclick = ()=>{ document.body.classList.toggle('t-sched'); document.body.classList.remove('t-spec'); };
+  t2.onclick = ()=>{ document.body.classList.toggle('t-spec'); document.body.classList.remove('t-sched'); };
+  addEventListener('keydown', e=>{ if(e.key==='Escape') select(null); });
+}
+const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
+
+/* =======================================================================
+   FRAME LOOP
+   ======================================================================= */
+let flowT = 0;
+function onResize(){
+  const w = innerWidth, h = innerHeight;
+  renderer.setSize(w,h); camera.aspect = w/h; camera.updateProjectionMatrix();
+  const s = document.getElementById('svgo'); s.setAttribute('viewBox','0 0 '+w+' '+h); s.setAttribute('width',w); s.setAttribute('height',h);
+}
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), .05);
+
+  /* deployment state */
+  const target = state.cfgOp ? 1 : 0;
+  state.deploy += (target - state.deploy) * Math.min(1, dt*3.2);
+  const dp = state.deploy;
+  if(parts['CV-101']){
+    parts['CV-101'].group.rotation.z = (1-dp)*1.52;
+    parts['SH-102'].group.rotation.z = (1-dp)*1.52;
+    parts['CN-103'].group.rotation.z = -1.45 + 0.75*dp;
+    parts['FN-113'].stack.position.y = 2.45 + 1.80*dp;
+    parts['TL-502'].catwalk.rotation.x = (1-dp)*1.5;
+    parts['OR-406'].legs.forEach(l=> l.position.y = 1.18 - .63*dp);
+  }
+  /* exploded assembly */
+  Object.keys(parts).forEach(t=>{
+    const p = parts[t]; if(!p.dir) return;
+    p.group.position.copy(p.base).addScaledVector(p.dir, state.explode * 2.1);
+  });
+  /* rotating machinery */
+  if(parts['D-110'].spin) parts['D-110'].spin.rotation.x += dt*.42;
+
+  /* stream animation */
+  if(state.flow){
+    flowT += dt;
+    flowGroups.forEach((f,i)=>{
+      const per = 4.2 + (i%3)*1.1;
+      f.parts.forEach(p=>{
+        const t = ((flowT/per) + p.userData.t) % 1;
+        f.curve.getPointAt(t, p.position);
+      });
+    });
+  }
+
+  /* camera damping */
+  const k = Math.min(1, dt*5.5);
+  cam.th += (cam.gth-cam.th)*k; cam.ph += (cam.gph-cam.ph)*k; cam.d += (cam.gd-cam.d)*k;
+  cam.t.lerp(cam.gt, k);
+  camera.position.copy(camPos()); camera.lookAt(cam.t);
+
+  updateLabels();
+  renderer.render(scene, camera);
+}
+
+/* ---------------- label projection ---------------- */
+const _v = new THREE.Vector3();
+function project(p){
+  _v.copy(p).project(camera);
+  return {x:(_v.x*.5+.5)*innerWidth, y:(-_v.y*.5+.5)*innerHeight, z:_v.z};
+}
+function updateLabels(){
+  const svg = document.getElementById('svgo');
+  let d = '';
+  const cx = innerWidth*.5, cy = innerHeight*.5;
+  Object.keys(parts).forEach(t=>{
+    const p = parts[t]; if(!p.label) return;
+    if(!state.tags){ p.label.style.display='none'; return; }
+    const a = p.anchor.clone().addScaledVector(p.dir||V3(), state.explode*2.1);
+    const s = project(a);
+    if(s.z > 1 || s.z < -1){ p.label.style.display='none'; return; }
+    let vx = s.x-cx, vy = s.y-cy; const L = Math.hypot(vx,vy)||1;
+    const off = clamp(52 + p.labAng*1.5, 46, 88);
+    const bx = clamp(s.x + vx/L*off, 60, innerWidth-60);
+    const by = clamp(s.y + vy/L*off - 24, 66, innerHeight-70);
+    p.label.style.display='block';
+    p.label.style.left = bx+'px'; p.label.style.top = by+'px';
+    d += '<line x1="'+bx.toFixed(1)+'" y1="'+by.toFixed(1)+'" x2="'+s.x.toFixed(1)+'" y2="'+s.y.toFixed(1)+
+         '" stroke="'+(state.sel&&state.sel!==t?'rgba(233,161,59,.2)':'rgba(233,161,59,.55)')+'" stroke-width="1"/>'+
+         '<circle cx="'+s.x.toFixed(1)+'" cy="'+s.y.toFixed(1)+'" r="2.4" fill="none" stroke="rgba(233,161,59,.8)" stroke-width="1"/>';
+  });
+  dimLabels.forEach(l=>{
+    if(!state.dims) return;
+    const s = project(l.p);
+    l.el.style.left = s.x+'px'; l.el.style.top = s.y+'px';
+    l.el.style.display = (s.z>1||s.z<-1) ? 'none' : 'block';
+  });
+  svg.innerHTML = state.tags ? d : '';
+}
+
+/* ---------------- go ---------------- */
+if(window.THREE) init();
+else document.getElementById('boot').innerHTML = '<p style="color:#D8593C">3D library unavailable — check the network connection and reload</p>';
+setTimeout(()=>{ const h=document.getElementById('hint'); if(h) h.style.opacity=0; }, 7000);
+</script>
