@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>References · MBPU-01</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-subtle: #f8f9fa;
+      --text: #191c1e;
+      --text-muted: #5c6370;
+      --line: #e3e5e8;
+      --line-subtle: #edf0f3;
+      --link: #0969da;
+      --link-hover: #054da7;
+      --chip-bg: #f2f4f7;
+      --chip-text: #374151;
+      --chip-active-bg: #191c1e;
+      --chip-active-text: #ffffff;
+      --focus-ring: #0969da;
+      --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+      --serif: "Charter", "Bitstream Charter", "Sitka Text", "Source Serif Pro", Georgia, serif;
+    }
+
+    [data-theme="dark"] {
+      --bg: #101418;
+      --bg-subtle: #171c22;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --line: #27303a;
+      --line-subtle: #1c232b;
+      --link: #58a6ff;
+      --link-hover: #79b8ff;
+      --chip-bg: #1a2129;
+      --chip-text: #c9d1d9;
+      --chip-active-bg: #e6edf3;
+      --chip-active-text: #101418;
+      --focus-ring: #58a6ff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .container {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    /* Top bar */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--text); }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-control {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--text-muted);
+      padding: 4px 9px;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+    .btn-control:hover {
+      color: var(--text);
+      border-color: var(--text-muted);
+    }
+    .btn-control.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
+    /* Header */
+    header {
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .meta-line {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Search & Filter */
+    .filter-bar {
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px 8px 34px;
+      font-size: 13.5px;
+      font-family: var(--sans);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: var(--bg-subtle);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .search-input:focus {
+      border-color: var(--focus-ring);
+      background: var(--bg);
+    }
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      width: 14px;
+      height: 14px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      background: var(--chip-bg);
+      color: var(--chip-text);
+      border: 1px solid transparent;
+      padding: 3px 9px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .chip:hover {
+      border-color: var(--line);
+    }
+    .chip.active {
+      background: var(--chip-active-bg);
+      color: var(--chip-active-text);
+    }
+
+    /* Reference List */
+    .ref-list {
+      list-style: none;
+    }
+
+    .ref-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line-subtle);
+    }
+    .ref-item:last-child {
+      border-bottom: 0;
+    }
+
+    /* Standard Academic Hanging Indent for APA */
+    .apa-citation {
+      font-family: var(--serif);
+      font-size: 14.5px;
+      line-height: 1.65;
+      color: var(--text);
+      padding-left: 28px;
+      text-indent: -28px;
+      word-wrap: break-word;
+    }
+
+    /* IEEE Numbered Format */
+    .ieee-citation {
+      font-family: var(--serif);
+      font-size: 14.5px;
+      line-height: 1.65;
+      color: var(--text);
+      display: flex;
+      gap: 10px;
+      word-wrap: break-word;
+    }
+    .ieee-num {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .ref-journal {
+      font-style: italic;
+    }
+
+    .doi-link {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--link);
+      text-decoration: none;
+      word-break: break-all;
+      margin-top: 3px;
+    }
+    .doi-link:hover {
+      color: var(--link-hover);
+      text-decoration: underline;
+    }
+
+    /* Action buttons below citation */
+    .ref-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding-left: 28px;
+    }
+    .ieee-active .ref-actions {
+      padding-left: 32px;
+    }
+
+    .act-btn {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.12s;
+    }
+    .act-btn:hover {
+      color: var(--text);
+      border-color: var(--text-muted);
+      background: var(--bg-subtle);
+    }
+
+    .category-label {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--text-muted);
+      padding: 1px 6px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .empty-state {
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      display: none;
+    }
+
+    /* Minimal Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--text);
+      color: var(--bg);
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 4px;
+      pointer-events: none;
+      opacity: 0;
+      transition: transform 0.16s ease, opacity 0.16s ease;
+      z-index: 100;
+    }
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 20px 16px 60px; }
+      .top-nav { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .nav-controls { width: 100%; justify-content: space-between; }
+      .apa-citation { padding-left: 0; text-indent: 0; }
+      .ref-actions { padding-left: 0; }
+      .ieee-active .ref-actions { padding-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="top-nav">
+      <a href="index.html" class="nav-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+        </svg>
+        MBPU-01 Model
+      </a>
+      <div class="nav-controls">
+        <div style="display:flex; border:1px solid var(--line); border-radius:4px; overflow:hidden;">
+          <button class="btn-control active" id="btnStyleApa" style="border:0; border-radius:0;" onclick="setStyle('apa')">APA 7th</button>
+          <button class="btn-control" id="btnStyleIeee" style="border:0; border-left:1px solid var(--line); border-radius:0;" onclick="setStyle('ieee')">IEEE</button>
+        </div>
+        <button class="btn-control" onclick="exportBibtexAll()">Export .bib</button>
+        <button class="btn-control" id="btnTheme" onclick="toggleTheme()">Dark</button>
+      </div>
+    </nav>
+
+    <header>
+      <h1>References</h1>
+      <div class="meta-line">
+        <span id="citationCount">24 sources</span>
+        <span>•</span>
+        <span>Project Literature & Citations</span>
+      </div>
+    </header>
+
+    <div class="filter-bar">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+          <circle cx="6.5" cy="6.5" r="4.5"/>
+          <line x1="10" y1="10" x2="14.5" y2="14.5"/>
+        </svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Filter by author, title, journal, or year..." oninput="filterRefs()">
+      </div>
+
+      <div class="chips" id="categoryChips"></div>
+    </div>
+
+    <ul class="ref-list" id="refList"></ul>
+    <div class="empty-state" id="emptyState">No references match your query.</div>
+  </div>
+
+  <div id="toast">Copied to clipboard</div>
+
+  <script>
+    const DATA = [{"id": "akter2024", "category": "economics", "authors": "Akter, M. M., Surovy, I. Z., Sultana, N., Faruk, M. O., Gilroyed, B. H., Tijing, L., Arman, Didar-ul-Alam, M., Shon, H. K., Nam, S. Y., & Kabir, M. M.", "year": 2024, "title": "Techno-economics and environmental sustainability of agricultural biomass-based energy potential", "journal": "Applied Energy", "volume": "359", "issue": "", "pages": "122662", "doi": "10.1016/j.apenergy.2024.122662", "type": "article", "bibtex": "@article{akter2024techno,\n  author = {Akter, Mst. Mahmoda and Surovy, Israt Zahan and Sultana, Nazmin and Faruk, Md. Omar and Gilroyed, Brandon H. and Tijing, Leonard and Arman and Didar-ul-Alam, Md. and Shon, Ho Kyong and Nam, Sang Yong and Kabir, Mohammad Mahbub},\n  title = {Techno-economics and environmental sustainability of agricultural biomass-based energy potential},\n  journal = {Applied Energy},\n  volume = {359},\n  pages = {122662},\n  year = {2024},\n  doi = {10.1016/j.apenergy.2024.122662}\n}"}, {"id": "ali2024", "category": "feedstock", "authors": "Ali, F., Dawood, A., Hussain, A., Alnasir, M. H., Khan, M. A., Butt, T. A., Janjua, N. K., & Hamid, A.", "year": 2024, "title": "Fueling the future: biomass applications for green and sustainable energy", "journal": "Discover Sustainability", "volume": "5", "issue": "1", "pages": "156", "doi": "10.1007/s43621-024-00309-z", "type": "article", "bibtex": "@article{ali2024fueling,\n  author = {Ali, Farhad and Dawood, Asadullah and Hussain, Akbar and Alnasir, M. Hisham and Khan, Muhammad Asad and Butt, Tariq Abbas and Janjua, Naveed Kausar and Hamid, Abdul},\n  title = {Fueling the future: biomass applications for green and sustainable energy},\n  journal = {Discover Sustainability},\n  volume = {5},\n  number = {1},\n  pages = {156},\n  year = {2024},\n  doi = {10.1007/s43621-024-00309-z}\n}"}, {"id": "badger2006", "category": "pyrolysis", "authors": "Badger, P. C., & Fransham, P.", "year": 2006, "title": "Use of mobile fast pyrolysis plants to densify biomass and reduce biomass handling costs—A preliminary assessment", "journal": "Biomass and Bioenergy", "volume": "30", "issue": "4", "pages": "321–325", "doi": "10.1016/j.biombioe.2005.07.011", "type": "article", "bibtex": "@article{badger2006use,\n  author = {Badger, Phillip C. and Fransham, Peter},\n  title = {Use of mobile fast pyrolysis plants to densify biomass and reduce biomass handling costs---A preliminary assessment},\n  journal = {Biomass and Bioenergy},\n  volume = {30},\n  number = {4},\n  pages = {321--325},\n  year = {2006},\n  doi = {10.1016/j.biombioe.2005.07.011}\n}"}, {"id": "bhatnagar2022", "category": "pyrolysis", "authors": "Bhatnagar, A., Khatri, P., Krzywonos, M., Tolvanen, H., & Konttinen, J.", "year": 2022, "title": "Techno-economic and environmental assessment of decentralized pyrolysis for crop residue management: Rice and wheat cultivation system in India", "journal": "Journal of Cleaner Production", "volume": "367", "issue": "", "pages": "132998", "doi": "10.1016/j.jclepro.2022.132998", "type": "article", "bibtex": "@article{bhatnagar2022techno,\n  author = {Bhatnagar, Anubhuti and Khatri, Poonam and Krzywonos, Malgorzata and Tolvanen, Henrik and Konttinen, Jukka},\n  title = {Techno-economic and environmental assessment of decentralized pyrolysis for crop residue management: Rice and wheat cultivation system in India},\n  journal = {Journal of Cleaner Production},\n  volume = {367},\n  pages = {132998},\n  year = {2022},\n  doi = {10.1016/j.jclepro.2022.132998}\n}"}, {"id": "boateng2019", "category": "pyrolysis", "authors": "Boateng, A. A., Schaffer, M. A., Mullen, C. A., & Goldberg, N. M.", "year": 2019, "title": "Mobile demonstration unit for fast- and catalytic pyrolysis: The combustion reduction integrated pyrolysis system (CRIPS)", "journal": "Journal of Analytical and Applied Pyrolysis", "volume": "137", "issue": "", "pages": "185–194", "doi": "10.1016/j.jaap.2018.11.024", "type": "article", "bibtex": "@article{boateng2019mobile,\n  author = {Boateng, Akwasi A. and Schaffer, Mark A. and Mullen, Charles A. and Goldberg, Neil M.},\n  title = {Mobile demonstration unit for fast- and catalytic pyrolysis: The combustion reduction integrated pyrolysis system (CRIPS)},\n  journal = {Journal of Analytical and Applied Pyrolysis},\n  volume = {137},\n  pages = {185--194},\n  year = {2019},\n  doi = {10.1016/j.jaap.2018.11.024}\n}"}, {"id": "brown2013", "category": "economics", "authors": "Brown, D., Rowe, A., & Wild, P.", "year": 2013, "title": "A techno-economic analysis of using mobile distributed pyrolysis facilities to deliver a forest residue resource", "journal": "Bioresource Technology", "volume": "150", "issue": "", "pages": "367–376", "doi": "10.1016/j.biortech.2013.10.018", "type": "article", "bibtex": "@article{brown2013techno,\n  author = {Brown, Duncan and Rowe, Andrew and Wild, Peter},\n  title = {A techno-economic analysis of using mobile distributed pyrolysis facilities to deliver a forest residue resource},\n  journal = {Bioresource Technology},\n  volume = {150},\n  pages = {367--376},\n  year = {2013},\n  doi = {10.1016/j.biortech.2013.10.018}\n}"}, {"id": "ferrari2024", "category": "pyrolysis", "authors": "Ferrari, V., Nazari, M. T., da Silva, N. F., Crestani, L., Raymundo, L. M., Dotto, G. L., Piccin, J. S., Oliveira, L. F., & Bernardes, A. M.", "year": 2024, "title": "Pyrolysis: a promising technology for agricultural waste conversion into value-added products", "journal": "Environment, Development and Sustainability", "volume": "27", "issue": "8", "pages": "17957–17991", "doi": "10.1007/s10668-024-04760-w", "type": "article", "bibtex": "@article{ferrari2024pyrolysis,\n  author = {Ferrari, Valdecir and Nazari, Mateus Torres and da Silva, Nathalia Favarin and Crestani, Larissa and Raymundo, Lucas Manique and Dotto, Guilherme Luiz and Piccin, Jeferson Steffanello and Oliveira, L. F. and Bernardes, Andrea Moura},\n  title = {Pyrolysis: a promising technology for agricultural waste conversion into value-added products},\n  journal = {Environment, Development and Sustainability},\n  volume = {27},\n  number = {8},\n  pages = {17957--17991},\n  year = {2024},\n  doi = {10.1007/s10668-024-04760-w}\n}"}, {"id": "ha2014", "category": "logistics", "authors": "Hạ, M., Munster, C. L., & Provin, T. L.", "year": 2014, "title": "A Geographic Information Systems Program to Optimize Feedstock Logistics for Bioenergy Production for Mobile Pyrolysis Units", "journal": "Transactions of the ASABE", "volume": "57", "issue": "1", "pages": "249–257", "doi": "10.13031/trans.57.10120", "type": "article", "bibtex": "@article{ha2014geographic,\n  author = {H{\\textsubdot{a}}, Mac and Munster, Clyde L. and Provin, Tony L.},\n  title = {A Geographic Information Systems Program to Optimize Feedstock Logistics for Bioenergy Production for Mobile Pyrolysis Units},\n  journal = {Transactions of the ASABE},\n  volume = {57},\n  number = {1},\n  pages = {249--257},\n  year = {2014},\n  doi = {10.13031/trans.57.10120}\n}"}, {"id": "kim2015", "category": "economics", "authors": "Kim, D., Anderson, N. M., & Chung, W.", "year": 2015, "title": "Financial Performance of a Mobile Pyrolysis System Used to Produce Biochar from Sawmill Residues", "journal": "Forest Products Journal", "volume": "65", "issue": "5–6", "pages": "189–197", "doi": "10.13073/FPJ-D-14-00052", "type": "article", "bibtex": "@article{kim2015financial,\n  author = {Kim, Dongyeob and Anderson, Nathaniel McLean and Chung, Woodam},\n  title = {Financial Performance of a Mobile Pyrolysis System Used to Produce Biochar from Sawmill Residues},\n  journal = {Forest Products Journal},\n  volume = {65},\n  number = {5-6},\n  pages = {189--197},\n  year = {2015},\n  doi = {10.13073/FPJ-D-14-00052}\n}"}, {"id": "lut2021", "category": "feedstock", "authors": "LUT University School of Energy Systems", "year": 2021, "title": "Biogas production potential and utilization from agricultural and livestock waste in Bangladesh", "publisher": "LUT University Repository (LUTPub)", "volume": "", "issue": "", "pages": "Research Report", "url": "https://lutpub.lut.fi/handle/10024/171760", "type": "report", "bibtex": "@techreport{lut2021biogas,\n  author = {{LUT University, School of Energy Systems}},\n  title = {Biogas production potential and utilization from agricultural and livestock waste in Bangladesh},\n  institution = {LUT University},\n  year = {2021},\n  url = {https://lutpub.lut.fi/handle/10024/171760}\n}"}, {"id": "mamvura2020", "category": "feedstock", "authors": "Mamvura, T. A., & Danha, G.", "year": 2020, "title": "Biomass torrefaction as an emerging technology to aid in energy production", "journal": "Heliyon", "volume": "6", "issue": "3", "pages": "e03531", "doi": "10.1016/j.heliyon.2020.e03531", "type": "article", "bibtex": "@article{mamvura2020biomass,\n  author = {Mamvura, T. A. and Danha, G.},\n  title = {Biomass torrefaction as an emerging technology to aid in energy production},\n  journal = {Heliyon},\n  volume = {6},\n  number = {3},\n  pages = {e03531},\n  year = {2020},\n  doi = {10.1016/j.heliyon.2020.e03531}\n}"}, {"id": "marshall2014", "category": "pyrolysis", "authors": "Marshall, A. J., Wu, P. F., Mun, S.-H., & Lalonde, C.", "year": 2014, "title": "Commercial Application of Pyrolysis Technology in Agriculture", "journal": "American Society of Agricultural and Biological Engineers (ASABE / CSBE Joint Meeting)", "volume": "Paper No. 141909089", "issue": "", "pages": "1–19", "doi": "10.13031/aim.20141909089", "type": "proceedings", "bibtex": "@inproceedings{marshall2014commercial,\n  author = {Marshall, A. J. Sandy and Wu, Ping F. and Mun, Sang-Hun and Lalonde, Charles},\n  title = {Commercial Application of Pyrolysis Technology in Agriculture},\n  booktitle = {2014 ASABE and CSBE/SCGAB Annual International Meeting},\n  volume = {Paper No. 141909089},\n  year = {2014},\n  doi = {10.13031/aim.20141909089}\n}"}, {"id": "mostafazadeh2018", "category": "pyrolysis", "authors": "Mostafazadeh, A. K., Solomatnikova, O., Drogui, P., & Tyagi, R. D.", "year": 2018, "title": "A review of recent research and developments in fast pyrolysis and bio-oil upgrading", "journal": "Biomass Conversion and Biorefinery", "volume": "8", "issue": "3", "pages": "739–773", "doi": "10.1007/s13399-018-0320-z", "type": "article", "bibtex": "@article{mostafazadeh2018review,\n  author = {Mostafazadeh, Ali Khosravanipour and Solomatnikova, Olga and Drogui, Patrick and Tyagi, Rajeshwar Dayal},\n  title = {A review of recent research and developments in fast pyrolysis and bio-oil upgrading},\n  journal = {Biomass Conversion and Biorefinery},\n  volume = {8},\n  number = {3},\n  pages = {739--773},\n  year = {2018},\n  doi = {10.1007/s13399-018-0320-z}\n}"}, {"id": "nobre2026", "category": "pyrolysis", "authors": "Nobre, C., Santos, S. M., Rey, J. C., Longo, A., Rijo, B., Panizio, R., Brito, P., & Mateos-Pedrero, C.", "year": 2026, "title": "Mobile Pyrolysis Systems for Decentralized Biomass Valorization: Technologies, Products, and Applications", "journal": "Recycling", "volume": "11", "issue": "2", "pages": "30", "doi": "10.3390/recycling11020030", "type": "article", "bibtex": "@article{nobre2026mobile,\n  author = {Nobre, Catarina and Santos, Santa Margarida and Rey, Jos{\\'e} Copa and Longo, Andrei and Rijo, Bruna and Panizio, Roberta and Brito, Paulo and Mateos-Pedrero, Cecilia},\n  title = {Mobile Pyrolysis Systems for Decentralized Biomass Valorization: Technologies, Products, and Applications},\n  journal = {Recycling},\n  volume = {11},\n  number = {2},\n  pages = {30},\n  year = {2026},\n  doi = {10.3390/recycling11020030}\n}"}, {"id": "osman2024", "category": "economics", "authors": "Osman, A. I., Fang, B., Zhang, Y., Liu, Y., Yu, J., Farghali, M., Rashwan, A. K., Chen, Z., Chen, L., Ihara, I., Rooney, D. W., & Yap, P.-S.", "year": 2024, "title": "Life cycle assessment and techno-economic analysis of sustainable bioenergy production: a review", "journal": "Environmental Chemistry Letters", "volume": "22", "issue": "3", "pages": "1115–1154", "doi": "10.1007/s10311-023-01694-z", "type": "article", "bibtex": "@article{osman2024life,\n  author = {Osman, Ahmed I. and Fang, Bingbing and Zhang, Yubing and Liu, Yunfei and Yu, Jiacheng and Farghali, Mohamed and Rashwan, Ahmed K. and Chen, Zhonghao and Chen, Lin and Ihara, Ikko and Rooney, David W. and Yap, Pow-Seng},\n  title = {Life cycle assessment and techno-economic analysis of sustainable bioenergy production: a review},\n  journal = {Environmental Chemistry Letters},\n  volume = {22},\n  number = {3},\n  pages = {1115--1154},\n  year = {2024},\n  doi = {10.1007/s10311-023-01694-z}\n}"}, {"id": "park2019", "category": "pyrolysis", "authors": "Park, H. S., Han, Y. S., & Park, J. H.", "year": 2019, "title": "Massive Recycling of Waste Mobile Phones: Pyrolysis, Physical Treatment, and Pyrometallurgical Processing of Insoluble Residue", "journal": "ACS Sustainable Chemistry & Engineering", "volume": "7", "issue": "16", "pages": "14119–14125", "doi": "10.1021/acssuschemeng.9b02725", "type": "article", "bibtex": "@article{park2019massive,\n  author = {Park, Hyun Sik and Han, Yun Soon and Park, Joo Hyun},\n  title = {Massive Recycling of Waste Mobile Phones: Pyrolysis, Physical Treatment, and Pyrometallurgical Processing of Insoluble Residue},\n  journal = {ACS Sustainable Chemistry \\& Engineering},\n  volume = {7},\n  number = {16},\n  pages = {14119--14125},\n  year = {2019},\n  doi = {10.1021/acssuschemeng.9b02725}\n}"}, {"id": "patel2019", "category": "logistics", "authors": "Patel, M., Oyedun, A. O., Kumar, A., & Doucette, J.", "year": 2019, "title": "The development of a cost model for two supply chain network scenarios for decentralized pyrolysis system scenarios to produce bio-oil", "journal": "Biomass and Bioenergy", "volume": "128", "issue": "", "pages": "105287", "doi": "10.1016/j.biombioe.2019.105287", "type": "article", "bibtex": "@article{patel2019development,\n  author = {Patel, Madhumita and Oyedun, Adetoyese Olajire and Kumar, Amit and Doucette, John},\n  title = {The development of a cost model for two supply chain network scenarios for decentralized pyrolysis system scenarios to produce bio-oil},\n  journal = {Biomass and Bioenergy},\n  volume = {128},\n  pages = {105287},\n  year = {2019},\n  doi = {10.1016/j.biombioe.2019.105287}\n}"}, {"id": "strategy2026", "category": "policy", "authors": "Power Division, Ministry of Power, Energy and Mineral Resources", "year": 2026, "title": "National Renewable Energy Development Strategy Paper (2026–2030) [জাতীয় নবায়নযোগ্য জ্বালানি উন্নয়ন কৌশলপত্র (২০২৬-২০৩০)]", "publisher": "Government of the People's Republic of Bangladesh, Dhaka", "volume": "", "issue": "", "pages": "24 pp.", "url": "https://powerdivision.gov.bd/", "type": "report", "bibtex": "@techreport{powerdivision2026national,\n  author = {{Power Division, Ministry of Power, Energy and Mineral Resources}},\n  title = {National Renewable Energy Development Strategy Paper (2026--2030)},\n  institution = {Government of the People's Republic of Bangladesh},\n  address = {Dhaka, Bangladesh},\n  year = {2026},\n  url = {https://powerdivision.gov.bd/}\n}"}, {"id": "purnama2025", "category": "feedstock", "authors": "Purnama, I., Mutamima, A., Sunarno, S., Nasution, I. A. U., Syaputra, E., & Aziz, M.", "year": 2025, "title": "Scalable biochar production from oil palm fronds and waste cooking oil: Techno-economic and policy-oriented evaluation for rural deployment", "journal": "Journal of Cleaner Production", "volume": "527", "issue": "", "pages": "146682", "doi": "10.1016/j.jclepro.2025.146682", "type": "article", "bibtex": "@article{purnama2025scalable,\n  author = {Purnama, Indra and Mutamima, Anisa and Sunarno, Sunarno and Nasution, Imran Al Ucok and Syaputra, Eka and Aziz, Muhammad},\n  title = {Scalable biochar production from oil palm fronds and waste cooking oil: Techno-economic and policy-oriented evaluation for rural deployment},\n  journal = {Journal of Cleaner Production},\n  volume = {527},\n  pages = {146682},\n  year = {2025},\n  doi = {10.1016/j.jclepro.2025.146682}\n}"}, {"id": "sadeghi2019", "category": "logistics", "authors": "Sadeghi, J., & Haapala, K. R.", "year": 2019, "title": "Optimizing a sustainable logistics problem in a renewable energy network using a genetic algorithm", "journal": "OPSEARCH", "volume": "56", "issue": "1", "pages": "73–90", "doi": "10.1007/s12597-019-00356-5", "type": "article", "bibtex": "@article{sadeghi2019optimizing,\n  author = {Sadeghi, Javad and Haapala, Karl R.},\n  title = {Optimizing a sustainable logistics problem in a renewable energy network using a genetic algorithm},\n  journal = {OPSEARCH},\n  volume = {56},\n  number = {1},\n  pages = {73--90},\n  year = {2019},\n  doi = {10.1007/s12597-019-00356-5}\n}"}, {"id": "sarker2025", "category": "feedstock", "authors": "Sarker, T. R., & Nanda, S.", "year": 2025, "title": "Energy production from farming waste: a review", "journal": "Environmental Chemistry Letters", "volume": "23", "issue": "5", "pages": "1187–1207", "doi": "10.1007/s10311-025-01846-3", "type": "article", "bibtex": "@article{sarker2025energy,\n  author = {Sarker, Tumpa R. and Nanda, Sonil},\n  title = {Energy production from farming waste: a review},\n  journal = {Environmental Chemistry Letters},\n  volume = {23},\n  number = {5},\n  pages = {1187--1207},\n  year = {2025},\n  doi = {10.1007/s10311-025-01846-3}\n}"}, {"id": "sarker2023", "category": "feedstock", "authors": "Sarker, T. R., German, C., Borugadda, V. B., Meda, V., & Dalai, A. K.", "year": 2023, "title": "Techno-economic analysis of torrefied fuel pellet production from agricultural residue via integrated torrefaction and pelletization process", "journal": "Heliyon", "volume": "9", "issue": "6", "pages": "e16359", "doi": "10.1016/j.heliyon.2023.e16359", "type": "article", "bibtex": "@article{sarker2023techno,\n  author = {Sarker, Tumpa R. and German, Colton and Borugadda, Venu Babu and Meda, Venkatesh and Dalai, Ajay K.},\n  title = {Techno-economic analysis of torrefied fuel pellet production from agricultural residue via integrated torrefaction and pelletization process},\n  journal = {Heliyon},\n  volume = {9},\n  number = {6},\n  pages = {e16359},\n  year = {2023},\n  doi = {10.1016/j.heliyon.2023.e16359}\n}"}, {"id": "singh2023", "category": "feedstock", "authors": "Singh, S., Singh, P., Sharma, A., & Choudhury, M. (Eds.)", "year": 2023, "title": "Agriculture Waste Management and Bioresource: The Circular Economy Perspective", "publisher": "John Wiley & Sons Ltd", "volume": "", "issue": "", "pages": "336 pp.", "doi": "10.1002/9781119808428", "type": "book", "bibtex": "@book{singh2023agriculture,\n  editor = {Singh, Suruchi and Singh, Pardeep and Sharma, Anu and Choudhury, Moharana},\n  title = {Agriculture Waste Management and Bioresource: The Circular Economy Perspective},\n  publisher = {John Wiley & Sons Ltd},\n  year = {2023},\n  doi = {10.1002/9781119808428}\n}"}, {"id": "trninic2016", "category": "pyrolysis", "authors": "Trninić, M., Jovović, A., & Stojiljković, D.", "year": 2016, "title": "A steady state model of agricultural waste pyrolysis: A mini review", "journal": "Waste Management & Research", "volume": "34", "issue": "9", "pages": "851–865", "doi": "10.1177/0734242X16649685", "type": "article", "bibtex": "@article{trninic2016steady,\n  author = {Trnini{\\'c}, Marta and Jovovi{\\'c}, Aleksandar and Stojiljkovi{\\'c}, Dragoslava},\n  title = {A steady state model of agricultural waste pyrolysis: A mini review},\n  journal = {Waste Management \\& Research},\n  volume = {34},\n  number = {9},\n  pages = {851--865},\n  year = {2016},\n  doi = {10.1177/0734242X16649685}\n}"}];
+
+    let currentStyle = 'apa';
+    let currentCategory = 'all';
+    let searchQuery = '';
+
+    const refList = document.getElementById('refList');
+    const emptyState = document.getElementById('emptyState');
+    const toast = document.getElementById('toast');
+    const countEl = document.getElementById('citationCount');
+
+    const categoryNames = {
+      all: 'All',
+      pyrolysis: 'Mobile Pyrolysis',
+      feedstock: 'Feedstock & Residues',
+      economics: 'Economics & LCA',
+      logistics: 'GIS & Logistics',
+      policy: 'National Policy'
+    };
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1500);
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const next = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next === 'dark' ? 'dark' : '');
+      document.getElementById('btnTheme').textContent = next === 'dark' ? 'Light' : 'Dark';
+      localStorage.setItem('oratory-theme', next);
+    }
+
+    if (localStorage.getItem('oratory-theme') === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.getElementById('btnTheme').textContent = 'Light';
+    }
+
+    function setStyle(style) {
+      currentStyle = style;
+      document.getElementById('btnStyleApa').classList.toggle('active', style === 'apa');
+      document.getElementById('btnStyleIeee').classList.toggle('active', style === 'ieee');
+      if (style === 'ieee') {
+        refList.classList.add('ieee-active');
+      } else {
+        refList.classList.remove('ieee-active');
+      }
+      render();
+    }
+
+    function setCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.chip').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-cat') === cat);
+      });
+      render();
+    }
+
+    function buildCategoryChips() {
+      const counts = { all: DATA.length };
+      DATA.forEach(d => {
+        counts[d.category] = (counts[d.category] || 0) + 1;
+      });
+
+      const container = document.getElementById('categoryChips');
+      container.innerHTML = '';
+
+      const cats = ['all', 'pyrolysis', 'feedstock', 'economics', 'logistics', 'policy'];
+      cats.forEach(c => {
+        if (!counts[c] && c !== 'all') return;
+        const btn = document.createElement('button');
+        btn.className = 'chip' + (c === currentCategory ? ' active' : '');
+        btn.setAttribute('data-cat', c);
+        btn.textContent = `${categoryNames[c] || c} (${counts[c] || 0})`;
+        btn.onclick = () => setCategory(c);
+        container.appendChild(btn);
+      });
+    }
+
+    function filterRefs() {
+      searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+      render();
+    }
+
+    function formatApa(item) {
+      const parts = [];
+      parts.push(`${item.authors} (${item.year}). `);
+
+      if (item.type === 'book') {
+        parts.push(`<span class="ref-journal">${item.title}</span>. `);
+        if (item.publisher) parts.push(`${item.publisher}. `);
+      } else if (item.type === 'report') {
+        parts.push(`<span class="ref-journal">${item.title}</span>. `);
+        if (item.publisher) parts.push(`${item.publisher}. `);
+      } else {
+        parts.push(`${item.title}. `);
+        if (item.journal) {
+          parts.push(`<span class="ref-journal">${item.journal}</span>`);
+          if (item.volume) parts.push(`, ${item.volume}`);
+          if (item.issue) parts.push(`(${item.issue})`);
+          if (item.pages) parts.push(`, ${item.pages}`);
+          parts.push('. ');
+        }
+      }
+
+      return parts.join('');
+    }
+
+    function formatIeee(item, index) {
+      const parts = [];
+      if (item.type === 'book') {
+        parts.push(`${item.authors}, <span class="ref-journal">${item.title}</span>. ${item.publisher || ''}, ${item.year}.`);
+      } else if (item.type === 'report') {
+        parts.push(`${item.authors}, "${item.title}," ${item.publisher || ''}, ${item.year}.`);
+      } else {
+        parts.push(`${item.authors}, "${item.title}," <span class="ref-journal">${item.journal || ''}</span>`);
+        if (item.volume) parts.push(`, vol. ${item.volume}`);
+        if (item.issue) parts.push(`, no. ${item.issue}`);
+        if (item.pages) parts.push(`, pp. ${item.pages}`);
+        parts.push(`, ${item.year}.`);
+      }
+      return parts.join('');
+    }
+
+    function copyToClipboard(text, label) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(`Copied ${label}`);
+        }).catch(() => fallbackCopy(text, label));
+      } else {
+        fallbackCopy(text, label);
+      }
+    }
+
+    function fallbackCopy(text, label) {
+      const t = document.createElement('textarea');
+      t.value = text;
+      document.body.appendChild(t);
+      t.select();
+      document.execCommand('copy');
+      document.body.removeChild(t);
+      showToast(`Copied ${label}`);
+    }
+
+    function copyCitation(index) {
+      const item = DATA[index];
+      let plain = '';
+      if (currentStyle === 'ieee') {
+        const base = item.type === 'book'
+          ? `${item.authors}, ${item.title}. ${item.publisher || ''}, ${item.year}.`
+          : `${item.authors}, "${item.title}," ${item.journal || ''}` + (item.volume ? `, vol. ${item.volume}` : '') + (item.pages ? `, pp. ${item.pages}` : '') + `, ${item.year}.`;
+        const link = item.doi ? ` https://doi.org/${item.doi}` : (item.url ? ` ${item.url}` : '');
+        plain = `${base}${link}`;
+      } else {
+        let base = `${item.authors} (${item.year}). ${item.title}. `;
+        if (item.journal) base += `${item.journal}`;
+        if (item.volume) base += `, ${item.volume}`;
+        if (item.pages) base += `, ${item.pages}.`;
+        else base += '.';
+        const link = item.doi ? ` https://doi.org/${item.doi}` : (item.url ? ` ${item.url}` : '');
+        plain = `${base}${link}`;
+      }
+      copyToClipboard(plain, `${currentStyle.toUpperCase()} citation`);
+    }
+
+    function copyBibtex(index) {
+      const item = DATA[index];
+      copyToClipboard(item.bibtex, 'BibTeX');
+    }
+
+    function exportBibtexAll() {
+      const bib = DATA.map(d => d.bibtex).join('\n\n');
+      const blob = new Blob([bib], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'oratory_references.bib';
+      a.click();
+      showToast('Downloaded oratory_references.bib');
+    }
+
+    function render() {
+      refList.innerHTML = '';
+      let visibleCount = 0;
+
+      const filtered = DATA.filter(item => {
+        if (currentCategory !== 'all' && item.category !== currentCategory) {
+          return false;
+        }
+        if (searchQuery) {
+          const hay = (item.title + ' ' + item.authors + ' ' + (item.journal || '') + ' ' + item.year + ' ' + (item.doi || '')).toLowerCase();
+          if (!hay.includes(searchQuery)) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        emptyState.style.display = 'block';
+        countEl.textContent = '0 sources';
+        return;
+      } else {
+        emptyState.style.display = 'none';
+        countEl.textContent = `${filtered.length} of ${DATA.length} sources`;
+      }
+
+      filtered.forEach(item => {
+        visibleCount++;
+        const globalIdx = DATA.indexOf(item);
+        const li = document.createElement('li');
+        li.className = 'ref-item';
+
+        const doiHref = item.doi ? `https://doi.org/${item.doi}` : (item.url || '#');
+        const doiLabel = item.doi ? `https://doi.org/${item.doi}` : (item.url || '');
+
+        let citationHtml = '';
+        if (currentStyle === 'ieee') {
+          citationHtml = `
+            <div class="ieee-citation">
+              <span class="ieee-num">[${visibleCount}]</span>
+              <div>
+                <div>${formatIeee(item, visibleCount)}</div>
+                ${doiLabel ? `<a href="${doiHref}" target="_blank" rel="noopener noreferrer" class="doi-link">${doiLabel}</a>` : ''}
+              </div>
+            </div>
+          `;
+        } else {
+          citationHtml = `
+            <div class="apa-citation">
+              ${formatApa(item)}
+              ${doiLabel ? `<br><a href="${doiHref}" target="_blank" rel="noopener noreferrer" class="doi-link">${doiLabel}</a>` : ''}
+            </div>
+          `;
+        }
+
+        const actionsHtml = `
+          <div class="ref-actions">
+            <button class="act-btn" onclick="copyCitation(${globalIdx})">Copy ${currentStyle.toUpperCase()}</button>
+            <button class="act-btn" onclick="copyBibtex(${globalIdx})">BibTeX</button>
+            ${item.doi ? `<a href="${doiHref}" target="_blank" rel="noopener noreferrer" class="act-btn">DOI ↗</a>` : ''}
+            <span class="category-label">${categoryNames[item.category] || item.category}</span>
+          </div>
+        `;
+
+        li.innerHTML = citationHtml + actionsHtml;
+        refList.appendChild(li);
+      });
+    }
+
+    buildCategoryChips();
+    render();
+  </script>
+</body>
+</html>
